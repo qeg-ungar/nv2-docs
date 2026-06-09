@@ -1,8 +1,8 @@
-.venv/
 docs/build/
 docs/source/_build/
 _build/
 __pycache__/
 *.pyc
-.DS_Store
+.venv/
 .env
+.DS_Store
