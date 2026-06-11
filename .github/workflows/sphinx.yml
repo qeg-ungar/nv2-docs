@@ -1,6 +1,10 @@
 name: "Sphinx: Render docs"
 
-on: push
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -8,19 +12,28 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - name: Build HTML
-      uses: ammaraskar/sphinx-action@master
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: html-docs
-        path: docs/build/html/
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main'
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/build/html
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r docs/requirements.txt
+
+      - name: Build HTML
+        run: sphinx-build -b html docs/source docs/build/html -W --keep-going
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-docs
+          path: docs/build/html/
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/html
