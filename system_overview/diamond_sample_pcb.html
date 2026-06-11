@@ -199,9 +199,9 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software.html">Software Organization</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Calibration &amp; Building Procedures</span></p>
+<p class="caption" role="heading"><span class="caption-text">Alignment &amp; Calibration</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Calibration &amp; Building Procedures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Alignment &amp; Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/optics_alignment.html">Optics Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/magnetic_field_alignment.html">Magnetic Field Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/iq_calibration.html">IQ Calibration</a></li>
@@ -234,7 +234,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/system_overview/diamond_sample_pcb.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/system_overview/diamond_sample_pcb.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -276,18 +276,12 @@ interfaces with the temperature control and positioning hardware.</p>
 <em>(Figure placeholder — add annotated photo.)</em></span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<p><em>Add: description of how diamond is fixed to PCB (crystal bond, silver paint, etc.),
-wire bonding or direct contact, strain considerations.</em></p>
+<p><em>Add: description of how diamond is fixed to PCB (crystal bond, silver paint, etc.), wire bonding or direct contact, strain considerations.</em></p>
 </section>
 <section id="diamond-specifications">
 <h2>Diamond Specifications<a class="headerlink" href="#diamond-specifications" title="Link to this heading">¶</a></h2>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 35.0%" />
-<col style="width: 25.0%" />
-<col style="width: 40.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
 <th class="head"><p>Value</p></th>
@@ -296,23 +290,23 @@ wire bonding or direct contact, strain considerations.</em></p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Type</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>e.g., electronic grade, CVD</p></td>
 </tr>
 <tr class="row-odd"><td><p>NV density</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>ppb</p></td>
 </tr>
 <tr class="row-even"><td><p>Surface cut</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>e.g., [100], [111]</p></td>
 </tr>
 <tr class="row-odd"><td><p>Surface treatment</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>e.g., acid clean, annealing</p></td>
 </tr>
 <tr class="row-even"><td><p>Dimensions</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>mm × mm × mm</p></td>
 </tr>
 </tbody>
@@ -333,15 +327,14 @@ wire bonding or direct contact, strain considerations.</em></p>
 </section>
 <section id="temperature-control">
 <h2>Temperature Control<a class="headerlink" href="#temperature-control" title="Link to this heading">¶</a></h2>
-<p>The Heater PID maintains the sample temperature.</p>
-<p><em>Add: PID controller model, setpoint range, sensor type and placement, typical stability.</em></p>
+<p>The Heater PID maintains the sample temperature. <em>Add: PID controller model, setpoint range, sensor type and placement, typical stability.</em></p>
 </section>
 <section id="positioning">
 <h2>Positioning<a class="headerlink" href="#positioning" title="Link to this heading">¶</a></h2>
-<p>The XYZ piezo scanner moves the sample relative to the fixed confocal spot for raster imaging.</p>
-<p><em>Add: piezo model, range (µm), voltage-to-displacement calibration, resonance frequency.</em></p>
-<p>The magnet stage positions a permanent magnet to apply a static bias field along a chosen NV axis.</p>
-<p><em>Add: magnet type, field strength at sample, angular and linear travel.</em></p>
+<p>The XYZ piezo scanner moves the sample relative to the fixed confocal spot for raster imaging.
+<em>Add: piezo model, range (µm), voltage-to-displacement calibration, resonance frequency.</em></p>
+<p>The magnet stage positions a permanent magnet to apply a static bias field along a chosen NV axis.
+<em>Add: magnet type, field strength at sample, angular and linear travel.</em></p>
 </section>
 </section>
 

@@ -199,9 +199,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../system_overview/diamond_sample_pcb.html">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../system_overview/software.html">Software Organization</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Calibration &amp; Building Procedures</span></p>
+<p class="caption" role="heading"><span class="caption-text">Alignment &amp; Calibration</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Calibration &amp; Building Procedures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Alignment &amp; Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/optics_alignment.html">Optics Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/magnetic_field_alignment.html">Magnetic Field Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/iq_calibration.html">IQ Calibration</a></li>
@@ -234,7 +234,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/experiments/rf_nuclear_spin.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/experiments/rf_nuclear_spin.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -259,10 +259,10 @@ controlled using RF pulses. This enables multi-qubit operations, quantum memory 
 enhanced sensing via ancilla-assisted readout.</p>
 <section id="background">
 <h2>Background<a class="headerlink" href="#background" title="Link to this heading">¶</a></h2>
-<p>The ¹⁴N nucleus (I = 1) is hyperfine coupled to the NV electron spin with A<sub>∥</sub> ≈ −2.16 MHz.
+<p>The ¹⁴N nucleus (I = 1) is hyperfine coupled to the NV electron spin with A_∥ ≈ −2.16 MHz.
 At high bias field (≳ 500 G), the nuclear spin quantization axis is set by the external field
 and the nuclear spin levels are individually addressable via RF pulses at the nuclear Larmor
-frequency (for ¹⁴N: γ<sub>N</sub> ≈ 3.08 kHz/G).</p>
+frequency (for ¹⁴N: γ_N ≈ 3.08 kHz/G).</p>
 <figure class="align-center" id="id1">
 <a class="reference internal image-reference" href="_static/images/nv_n14_energy_levels.png"><img alt="NV-N14 coupled energy level diagram" src="_static/images/nv_n14_energy_levels.png" style="width: 65%;" />
 </a>
@@ -284,8 +284,8 @@ frequency (for ¹⁴N: γ<sub>N</sub> ≈ 3.08 kHz/G).</p>
 <h2>Pulse Sequences<a class="headerlink" href="#pulse-sequences" title="Link to this heading">¶</a></h2>
 <section id="nuclear-spin-initialization-polarization">
 <h3>Nuclear Spin Initialization (Polarization)<a class="headerlink" href="#nuclear-spin-initialization-polarization" title="Link to this heading">¶</a></h3>
-<p>The nuclear spin is polarized via electron-nuclear SWAP or conditional rotation sequences.</p>
-<p><em>Add: specific QUA sequence used, typical polarization fidelity.</em></p>
+<p>The nuclear spin is polarized via electron-nuclear SWAP or conditional rotation sequences.
+<em>Add: specific QUA sequence used, typical polarization fidelity.</em></p>
 <figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="_static/images/nuclear_init_sequence.png"><img alt="Nuclear spin initialization sequence" src="_static/images/nuclear_init_sequence.png" style="width: 70%;" />
 </a>
@@ -297,14 +297,8 @@ frequency (for ¹⁴N: γ<sub>N</sub> ≈ 3.08 kHz/G).</p>
 </section>
 <section id="nuclear-rabi-oscillations">
 <h3>Nuclear Rabi Oscillations<a class="headerlink" href="#nuclear-rabi-oscillations" title="Link to this heading">¶</a></h3>
-<p>Apply an RF pulse at the nuclear transition frequency and vary pulse duration to observe Rabi
-oscillations.</p>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 45.0%" />
-<col style="width: 55.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
 <th class="head"><p>Typical Value</p></th>
@@ -315,13 +309,13 @@ oscillations.</p>
 <td><p>≈ 3.08 kHz/G × |B|</p></td>
 </tr>
 <tr class="row-odd"><td><p>RF power at antenna</p></td>
-<td></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p>Rabi frequency</p></td>
-<td></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p>π pulse duration</p></td>
-<td></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -340,9 +334,7 @@ oscillations.</p>
 <h2>Procedure<a class="headerlink" href="#procedure" title="Link to this heading">¶</a></h2>
 <section id="find-nuclear-transition-frequency">
 <h3>1. Find Nuclear Transition Frequency<a class="headerlink" href="#find-nuclear-transition-frequency" title="Link to this heading">¶</a></h3>
-<p>Run a nuclear ODMR sweep (electron pre-selected in m<sub>s</sub> = −1) to identify the nuclear
-transition frequency.</p>
-<p><em>Add: which script to use, sweep range, expected linewidth.</em></p>
+<p>Run a nuclear ODMR sweep (electron pre-selected in m_s = −1) to identify the nuclear transition frequency.</p>
 </section>
 <section id="calibrate-rf-pulse">
 <h3>2. Calibrate RF π Pulse<a class="headerlink" href="#calibrate-rf-pulse" title="Link to this heading">¶</a></h3>
@@ -354,8 +346,7 @@ transition frequency.</p>
 </section>
 <section id="data-analysis">
 <h3>4. Data Analysis<a class="headerlink" href="#data-analysis" title="Link to this heading">¶</a></h3>
-<p><em>Add: analysis notebook, observable of interest, how to extract nuclear spin polarization from
-electron readout.</em></p>
+<p><em>Add: analysis notebook, observable of interest, how to extract nuclear spin polarization from electron readout.</em></p>
 </section>
 </section>
 <section id="notes">

@@ -199,9 +199,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../system_overview/diamond_sample_pcb.html">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../system_overview/software.html">Software Organization</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Calibration &amp; Building Procedures</span></p>
+<p class="caption" role="heading"><span class="caption-text">Alignment &amp; Calibration</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Calibration &amp; Building Procedures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Alignment &amp; Calibration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/optics_alignment.html">Optics Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/magnetic_field_alignment.html">Magnetic Field Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/iq_calibration.html">IQ Calibration</a></li>
@@ -234,7 +234,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/experiments/spad_array_detection.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/experiments/spad_array_detection.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -259,9 +259,8 @@ fluorescence, supporting wide-field spin imaging and spatially resolved readout 
 without point-by-point scanning.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>Unlike a single APD or SPCM (which integrates fluorescence from the confocal volume), the SPAD
-array images the NV fluorescence onto a 2D detector where each pixel is an independent
-single-photon detector. This enables:</p>
+<p>Unlike a single APD or SPCM, the SPAD array images NV fluorescence onto a 2D detector where
+each pixel is an independent single-photon detector. This enables:</p>
 <ul class="simple">
 <li><p><strong>Wide-field ODMR</strong> — spatial maps of spin resonance frequency (e.g., magnetic field maps)</p></li>
 <li><p><strong>Parallel confocal</strong> — simultaneous readout of multiple single NVs</p></li>
@@ -271,20 +270,15 @@ single-photon detector. This enables:</p>
 <a class="reference internal image-reference" href="_static/images/spad_widefield_overview.png"><img alt="SPAD array wide-field detection overview" src="_static/images/spad_widefield_overview.png" style="width: 75%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Wide-field NV imaging using the SPAD array: fluorescence from many NVs is imaged simultaneously.
+<p><span class="caption-text">Wide-field NV imaging using the SPAD array.
 <em>(Figure placeholder — add schematic and example image.)</em></span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="spad-array-specifications">
 <h2>SPAD Array Specifications<a class="headerlink" href="#spad-array-specifications" title="Link to this heading">¶</a></h2>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 40.0%" />
-<col style="width: 25.0%" />
-<col style="width: 35.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Parameter</p></th>
 <th class="head"><p>Value</p></th>
@@ -293,27 +287,27 @@ single-photon detector. This enables:</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Array size</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>pixels</p></td>
 </tr>
 <tr class="row-odd"><td><p>Pixel pitch</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>µm</p></td>
 </tr>
 <tr class="row-even"><td><p>Fill factor</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>%</p></td>
 </tr>
 <tr class="row-odd"><td><p>Dark count rate per pixel</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>cps</p></td>
 </tr>
 <tr class="row-even"><td><p>Timing resolution (TCSPC)</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>ps</p></td>
 </tr>
 <tr class="row-odd"><td><p>Maximum count rate per pixel</p></td>
-<td></td>
+<td><p></p></td>
 <td><p>Mcps</p></td>
 </tr>
 </tbody>
@@ -325,8 +319,7 @@ single-photon detector. This enables:</p>
 <h2>Optical Configuration<a class="headerlink" href="#optical-configuration" title="Link to this heading">¶</a></h2>
 <p>The SPAD array is placed at an image plane of the collection objective. A relay lens system
 maps the NV plane to the SPAD pixel array.</p>
-<p><em>Add: relay lens magnification, resulting FOV and spatial resolution per pixel, how SPAD path
-is selected (flip mirror, beam splitter).</em></p>
+<p><em>Add: relay lens magnification, FOV and spatial resolution per pixel, how SPAD path is selected.</em></p>
 <figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="_static/images/spad_optical_path.png"><img alt="SPAD array optical path" src="_static/images/spad_optical_path.png" style="width: 70%;" />
 </a>
@@ -340,47 +333,41 @@ is selected (flip mirror, beam splitter).</em></p>
 <h2>Readout Modes<a class="headerlink" href="#readout-modes" title="Link to this heading">¶</a></h2>
 <section id="intensity-imaging">
 <h3>Intensity Imaging<a class="headerlink" href="#intensity-imaging" title="Link to this heading">¶</a></h3>
-<p>Sum photon counts per pixel over a fixed integration window. Used for sample navigation and
-wide-field fluorescence mapping.</p>
+<p>Sum photon counts per pixel over a fixed integration window. Used for navigation and wide-field fluorescence mapping.</p>
 </section>
 <section id="time-gated-detection">
 <h3>Time-Gated Detection<a class="headerlink" href="#time-gated-detection" title="Link to this heading">¶</a></h3>
 <p>Use a time gate synchronized to the laser pulse (via OPX TTL) to collect NV fluorescence while
-rejecting background.</p>
-<p><em>Add: gate timing parameters, improvement in SNR.</em></p>
+rejecting background. <em>Add: gate timing parameters, improvement in SNR.</em></p>
 </section>
-<section id="tcspc-time-correlated-single-photon-counting">
-<h3>TCSPC (Time-Correlated Single Photon Counting)<a class="headerlink" href="#tcspc-time-correlated-single-photon-counting" title="Link to this heading">¶</a></h3>
-<p>Record photon arrival times relative to the laser pulse for lifetime measurements and
-correlation experiments.</p>
+<section id="tcspc">
+<h3>TCSPC<a class="headerlink" href="#tcspc" title="Link to this heading">¶</a></h3>
+<p>Record photon arrival times relative to the laser pulse for lifetime measurements and correlation experiments.</p>
 </section>
 </section>
 <section id="procedure">
 <h2>Procedure<a class="headerlink" href="#procedure" title="Link to this heading">¶</a></h2>
 <section id="align-spad-array">
 <h3>1. Align SPAD Array<a class="headerlink" href="#align-spad-array" title="Link to this heading">¶</a></h3>
-<p><em>Describe alignment of the relay optics to image the NV plane onto the SPAD array: use bright
-fluorescence reference, maximize counts across array, check image quality.</em></p>
+<p><em>Describe alignment of the relay optics to image the NV plane onto the SPAD array.</em></p>
 </section>
 <section id="configure-acquisition">
 <h3>2. Configure Acquisition<a class="headerlink" href="#configure-acquisition" title="Link to this heading">¶</a></h3>
-<p><em>Add: which software/driver is used, key acquisition parameters (integration time, gate window,
-trigger source).</em></p>
+<p><em>Add: software/driver used, key acquisition parameters (integration time, gate window, trigger source).</em></p>
 </section>
 <section id="wide-field-odmr">
 <h3>3. Wide-Field ODMR<a class="headerlink" href="#wide-field-odmr" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Set laser on (CW or pulsed).</p></li>
-<li><p>Sweep MW frequency; at each frequency step, acquire a full SPAD frame.</p></li>
+<li><p>Sweep MW frequency; at each step, acquire a full SPAD frame.</p></li>
 <li><p>For each pixel, fit the ODMR spectrum to extract resonance frequency and contrast.</p></li>
 <li><p>Generate a 2D map of resonance frequency (proportional to local magnetic field).</p></li>
 </ol>
-<p><em>Add: acquisition script, typical measurement time, expected spatial resolution.</em></p>
 <figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="_static/images/widefield_odmr_map.png"><img alt="Wide-field ODMR frequency map" src="_static/images/widefield_odmr_map.png" style="width: 70%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Example wide-field ODMR frequency map showing spatial variation of the magnetic field.
+<p><span class="caption-text">Example wide-field ODMR frequency map.
 <em>(Figure placeholder — add example data.)</em></span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
@@ -393,8 +380,7 @@ trigger source).</em></p>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>SPAD arrays have non-uniform pixel-to-pixel sensitivity; flat-field correction is important
-for quantitative imaging.</p></li>
+<li><p>SPAD arrays have non-uniform pixel-to-pixel sensitivity; flat-field correction is important for quantitative imaging.</p></li>
 <li><p>High count rates can cause pile-up in TCSPC mode; keep per-pixel rates well below saturation.</p></li>
 </ul>
 </section>
@@ -454,7 +440,7 @@ for quantitative imaging.</p></li>
 <li><a class="reference internal" href="#readout-modes">Readout Modes</a><ul>
 <li><a class="reference internal" href="#intensity-imaging">Intensity Imaging</a></li>
 <li><a class="reference internal" href="#time-gated-detection">Time-Gated Detection</a></li>
-<li><a class="reference internal" href="#tcspc-time-correlated-single-photon-counting">TCSPC (Time-Correlated Single Photon Counting)</a></li>
+<li><a class="reference internal" href="#tcspc">TCSPC</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#procedure">Procedure</a><ul>
