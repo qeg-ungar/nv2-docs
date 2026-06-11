@@ -10,10 +10,16 @@ release = '0.1'
 
 # -- General configuration ---------------------------------------------------
 
-extensions = []
+extensions = [
+    'myst_parser',
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
+
+myst_enable_extensions = [
+    'colon_fence',
+]
 
 # -- Options for HTML output -------------------------------------------------
 
