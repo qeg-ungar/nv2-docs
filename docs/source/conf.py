@@ -19,6 +19,7 @@ exclude_patterns = []
 
 myst_enable_extensions = [
     'colon_fence',
+    'dollarmath',
 ]
 
 # -- Options for HTML output -------------------------------------------------

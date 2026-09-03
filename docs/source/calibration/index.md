@@ -19,3 +19,13 @@ up the system from scratch.
 | Laser power at objective | | Realign AOM |
 | APD count rate (no MW) | | Check collection path |
 | ODMR contrast | | See {doc}`CW ODMR <cw_odmr>` |
+
+```{toctree}
+:maxdepth: 1
+
+sample_mounting
+optics_alignment
+magnetic_field_alignment
+cw_odmr
+iq_calibration
+```
