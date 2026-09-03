@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="RF &amp; Control Electronics" href="rf_electronics.html"><link rel="prev" title="Excitation Optics" href="excitation_optics.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Alignment &amp; Calibration" href="../calibration/index.html"><link rel="prev" title="Software Organization" href="software.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Imaging - NV2 Lab Manual</title>
+        <title>PID Heater - NV2 Lab Manual</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -190,30 +190,39 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">System Overview</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="index.html">System Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="excitation_optics.html">Excitation Optics</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rf_electronics.html">RF &amp; Control Electronics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="diamond_sample_pcb.html">Diamond Sample &amp; PCB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="software.html">Software Organization</a></li>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background/index.html">Background &amp; Motivation</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">System Overview</a><input aria-label="Toggle navigation of System Overview" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="optics.html">Optics &amp; Imaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rf_electronics.html">RF &amp; Control Electronics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diamond_sample.html">Diamond Sample &amp; PCB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html">Software Organization</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">PID Heater</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Alignment &amp; Calibration</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/index.html">Alignment &amp; Calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/optics_alignment.html">Optics Alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/magnetic_field_alignment.html">Magnetic Field Alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/iq_calibration.html">IQ Calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/sample_mounting.html">Sample Mounting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../calibration/cw_odmr.html">CW ODMR</a></li>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../calibration/index.html">Alignment &amp; Calibration</a><input aria-label="Toggle navigation of Alignment &amp; Calibration" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/sample_mounting.html">Sample Mounting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/optics_alignment.html">Optics Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/magnetic_field_alignment.html">Magnetic Field Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/cw_odmr.html">CW ODMR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/iq_calibration.html">IQ Calibration</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Experiments &amp; Applications</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../experiments/index.html">Experiments &amp; Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../experiments/confocal_imaging.html">Confocal Imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../experiments/rf_nuclear_spin.html">RF Nuclear Spin Control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../experiments/spad_array_detection.html">SPAD Array Detection</a></li>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../experiments/index.html">Experiments &amp; Applications</a><input aria-label="Toggle navigation of Experiments &amp; Applications" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/confocal_imaging.html">Confocal Imaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/rf_nuclear_spin.html">RF Nuclear Spin Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/spad_array_detection.html">SPAD Array Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/automation.html">Automation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendix/index.html">Appendix</a><input aria-label="Toggle navigation of Appendix" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/resources.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/documentations.html">Misc. Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/repairs.html">Repairs &amp; Upgrades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/future.html">Future improvements and upgrades</a></li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -234,7 +243,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/system_overview/imaging.md.txt" title="View this page">
+  <a class="muted-link" href="../_sources/system_overview/pid_heater.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -252,43 +261,27 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="imaging">
-<h1>Imaging<a class="headerlink" href="#imaging" title="Link to this heading">¶</a></h1>
-<p>The imaging subsystem supports both confocal (APD/SPCM) detection and wide-field camera imaging
-for diamond sample navigation and NV ensemble characterization.</p>
+          <section class="tex2jax_ignore mathjax_ignore" id="pid-heater">
+<h1>PID Heater<a class="headerlink" href="#pid-heater" title="Link to this heading">¶</a></h1>
+<p>The science box temperature is actively stabilized using an Arduino-based PID heater system.
+Temperature stability reduces thermal drift of the diamond sample and optical mounts, which
+is critical for long-duration experiments.</p>
 <section id="components">
 <h2>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>Alignment laser</strong> — low-power laser for sample navigation and wide-field illumination</p></li>
-<li><p><strong>Camera</strong> — wide-field imaging of the diamond surface and NV ensemble fluorescence</p></li>
-<li><p><strong>APD (Avalanche Photodiode)</strong> — single-photon confocal detection (fast, low dark count)</p></li>
-<li><p><strong>SPCM (Single-Photon Counting Module)</strong> — high-efficiency single-photon counting</p></li>
-<li><p><strong>NV fluorescence detection optics</strong> — collection objective, long-pass filter, beam splitter to APD/SPCM/camera</p></li>
+<li><p><strong>Arduino</strong> — microcontroller running the PID control loop</p></li>
+<li><p><strong>Heater element</strong> — resistive heater mounted inside the science box</p></li>
+<li><p><strong>Temperature sensor</strong> — thermistor or thermocouple for feedback</p></li>
+<li><p><strong>Power supply</strong> — drives the heater element</p></li>
 </ul>
 </section>
-<section id="detection-paths">
-<h2>Detection Paths<a class="headerlink" href="#detection-paths" title="Link to this heading">¶</a></h2>
-<figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="_static/images/detection_paths.png"><img alt="Detection path schematic" src="_static/images/detection_paths.png" style="width: 80%;" />
-</a>
-<figcaption>
-<p><span class="caption-text">Schematic of NV fluorescence collection and routing to camera, APD, and SPCM.
-<em>(Figure placeholder — add annotated diagram.)</em></span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
-<section id="confocal-detection-apd-spcm">
-<h3>Confocal Detection (APD / SPCM)<a class="headerlink" href="#confocal-detection-apd-spcm" title="Link to this heading">¶</a></h3>
-<p>NV fluorescence (&gt; 650 nm) is collected through the objective, separated from the excitation by a dichroic,
-filtered by a long-pass, and focused onto the APD or SPCM fiber coupler. The detector output (TTL pulses)
-is read by the NI I/O card or QM OPX.</p>
-<p><em>Add: fiber NA, long-pass filter model, typical count rates, detector specs.</em></p>
+<section id="pid-control">
+<h2>PID Control<a class="headerlink" href="#pid-control" title="Link to this heading">¶</a></h2>
+<p><em>Add: PID parameter values (Kp, Ki, Kd), setpoint temperature, typical stability (mK), sensor placement.</em></p>
 </section>
-<section id="wide-field-camera">
-<h3>Wide-Field Camera<a class="headerlink" href="#wide-field-camera" title="Link to this heading">¶</a></h3>
-<p>The camera images the diamond surface using the alignment laser for navigation and can capture
-NV ensemble fluorescence in wide-field mode.</p>
-<p><em>Add: camera model, pixel size, FOV, exposure settings for navigation.</em></p>
-</section>
+<section id="arduino-setup">
+<h2>Arduino Setup<a class="headerlink" href="#arduino-setup" title="Link to this heading">¶</a></h2>
+<p><em>Add: Arduino model, firmware/sketch details, serial interface, wiring diagram.</em></p>
 </section>
 <section id="key-parameters">
 <h2>Key Parameters<a class="headerlink" href="#key-parameters" title="Link to this heading">¶</a></h2>
@@ -301,25 +294,21 @@ NV ensemble fluorescence in wide-field mode.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Collection objective NA</p></td>
+<tr class="row-even"><td><p>Setpoint temperature</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>°C</p></td>
 </tr>
-<tr class="row-odd"><td><p>Long-pass filter cutoff</p></td>
+<tr class="row-odd"><td><p>Typical stability</p></td>
 <td><p></p></td>
-<td><p>nm</p></td>
+<td><p>mK</p></td>
 </tr>
-<tr class="row-even"><td><p>APD dark counts</p></td>
+<tr class="row-even"><td><p>Heater power</p></td>
 <td><p></p></td>
-<td><p>cps</p></td>
+<td><p>W</p></td>
 </tr>
-<tr class="row-odd"><td><p>Camera pixel size</p></td>
+<tr class="row-odd"><td><p>Sensor type</p></td>
 <td><p></p></td>
-<td><p>µm</p></td>
-</tr>
-<tr class="row-even"><td><p>Camera FOV</p></td>
 <td><p></p></td>
-<td><p>µm × µm</p></td>
 </tr>
 </tbody>
 </table>
@@ -332,23 +321,23 @@ NV ensemble fluorescence in wide-field mode.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="rf_electronics.html">
+          <a class="next-page" href="../calibration/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">RF &amp; Control Electronics</div>
+                <div class="title">Alignment &amp; Calibration</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="excitation_optics.html">
+          <a class="prev-page" href="software.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Excitation Optics</div>
+                <div class="title">Software Organization</div>
                 
               </div>
             </a>
@@ -382,13 +371,10 @@ NV ensemble fluorescence in wide-field mode.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Imaging</a><ul>
+<li><a class="reference internal" href="#">PID Heater</a><ul>
 <li><a class="reference internal" href="#components">Components</a></li>
-<li><a class="reference internal" href="#detection-paths">Detection Paths</a><ul>
-<li><a class="reference internal" href="#confocal-detection-apd-spcm">Confocal Detection (APD / SPCM)</a></li>
-<li><a class="reference internal" href="#wide-field-camera">Wide-Field Camera</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#pid-control">PID Control</a></li>
+<li><a class="reference internal" href="#arduino-setup">Arduino Setup</a></li>
 <li><a class="reference internal" href="#key-parameters">Key Parameters</a></li>
 </ul>
 </li>

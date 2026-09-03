@@ -1,0 +1,460 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="RF &amp; Control Electronics" href="rf_electronics.html"><link rel="prev" title="System Overview" href="index.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Optics &amp; Imaging - NV2 Lab Manual</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">NV2 Lab Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">NV2 Lab Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background/index.html">Background &amp; Motivation</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">System Overview</a><input aria-label="Toggle navigation of System Overview" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Optics &amp; Imaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rf_electronics.html">RF &amp; Control Electronics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diamond_sample.html">Diamond Sample &amp; PCB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html">Software Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pid_heater.html">PID Heater</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../calibration/index.html">Alignment &amp; Calibration</a><input aria-label="Toggle navigation of Alignment &amp; Calibration" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/sample_mounting.html">Sample Mounting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/optics_alignment.html">Optics Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/magnetic_field_alignment.html">Magnetic Field Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/cw_odmr.html">CW ODMR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calibration/iq_calibration.html">IQ Calibration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../experiments/index.html">Experiments &amp; Applications</a><input aria-label="Toggle navigation of Experiments &amp; Applications" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/confocal_imaging.html">Confocal Imaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/rf_nuclear_spin.html">RF Nuclear Spin Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/spad_array_detection.html">SPAD Array Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../experiments/automation.html">Automation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendix/index.html">Appendix</a><input aria-label="Toggle navigation of Appendix" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/resources.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/documentations.html">Misc. Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/repairs.html">Repairs &amp; Upgrades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/future.html">Future improvements and upgrades</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/system_overview/optics.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section class="tex2jax_ignore mathjax_ignore" id="optics-imaging">
+<h1>Optics &amp; Imaging<a class="headerlink" href="#optics-imaging" title="Link to this heading">¶</a></h1>
+<p>Here I summarize all of the details on the construction of the optical setup, designed to operate as an NV fluorescence microscope and perform optical readout of the NV spin state for pulse sequence control.</p>
+<section id="design-requirements">
+<h2>Design Requirements<a class="headerlink" href="#design-requirements" title="Link to this heading">¶</a></h2>
+<p>For imaging, we will need to resolve single NVs down to the diffraction limit and detect single photon emission. Thus the two key components in the setup are the high NA microscope objective and the single photon detector. The design of the optical setup is based around these two components and their specifications. We also need a way to alternate between confocal imaging and widefield imaging by adjusting the excitation beam profile at the objective focal plane and splitting the detection paths to the two detectors. The detection paths will need to be co-aligned with the focus of the excitation beam.</p>
+<p>For running pulsed experiments, the excitation laser will need to be modulated with a rise time on the order of 100 ns and pulse duration on the order of 1 <span class="math notranslate nohighlight">\(\mu\)</span>s for efficient spin polarization. The extinction ratio (measure of leakage light when laser is gated off) should be greater than 40 dB to avoid repolarization during microwave control. For widefield experiments, the  intensity of the excitation beam over the desired field of view should reach approximately the same intensity used for single NV experiments where the light is focused to the diffraction spot. See section () for the exact calculation, which turns out to be ~ 60 mW.</p>
+</section>
+<section id="layout-of-the-optical-setup">
+<h2>Layout of the Optical Setup<a class="headerlink" href="#layout-of-the-optical-setup" title="Link to this heading">¶</a></h2>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="../_images/nv_optics_combined.png"><img alt="Optics schematic" src="../_images/nv_optics_combined.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Schematic of the NV fluorescence microscope setup for confocal and widefield imaging.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="photos">
+<h2>Photos<a class="headerlink" href="#photos" title="Link to this heading">¶</a></h2>
+<p><em>(make subfigures like in the homepage)</em></p>
+<figure class="align-center" id="id8">
+<a class="reference internal image-reference" href="../_images/excitation_photo.png"><img alt="Excitation Optics" src="../_images/excitation_photo.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Picture of the excitation optics outside of the science box. The science box is located in the upper left of the photo, and the collection box is in the upper right.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id9">
+<a class="reference internal image-reference" href="../_images/detection_photo.png"><img alt="Collection Optics" src="../_images/detection_photo.png" style="width: 40%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Picture of the collection optics outside of the science box.</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Experiment laser</strong> — Lighthouse Photonics Sprout 5 W CW 532 nm DPSS laser https://www.gophotonics.com/products/lasers/lighthouse-photonics/29-511-sprout-g-5w</p></li>
+<li><p><strong>Alignment laser</strong> — Labs Electronics DLnsec 110 mW pulsed 520 nm diode laser https://labs-electronics.com/your-products/</p></li>
+<li><p><strong>AOM (Acousto-Optic Modulator)</strong> — IntraAction Corp <em>(need to find model number)</em></p></li>
+<li><p><strong>Optical fiber</strong>– Single mode
+-<strong>Fiber collimator 1</strong>
+-** Fiber collimator 2**</p></li>
+<li><p><strong>Microscope objective</strong>- NA, working distance, manufacturer/model
+-<strong>SPCM</strong>
+-<strong>SPAD Camera</strong></p></li>
+</ul>
+</section>
+<section id="operation">
+<h2>Operation<a class="headerlink" href="#operation" title="Link to this heading">¶</a></h2>
+<p>The two lasers have served different functions on the setup over the years. Originally, the setup relied on a single high power laser (Lighthouse Photonics Sprout 5 W 532 nm laser), which was also used to power NV1 simultaneously. The laser power supply had stability problems and I made some repairs to keep it alive, but we ultimately decided to upgrade our laser to a pulsed low power laser (DLnsec 110 mW 520 nm). This worked for running single NV confocal experiments since the max required power at the objective focal plane is ~ 0.5 mW, but it could not reach the power required for widefield experiments. We reinstalled the 5 W laser to run both confocal and widefield experiments and kept the DLnsec laser for alignment and imaging since the software control can be configured with Qudi.</p>
+<p>The Sprout laser is CW, so we use an AOM (intraction Corp) to modulate the output. The AOM is aligned to a single pass configuration (since we have enough space to isolate the 0th order beam with the iris). The two lenses are configured in a telescope arrangement to match the beam size to the optimal size for the AOM. An additional lens (f = 750 mm) was added to correct the light collimation before entering the fiber coupler. The DLnsec laser is directly modulated from a TTL signal out of the OPX+. The beam shape out of the laser diode is distorted (the beam width is stretched along one axis relative to the other). This is partially corrected with a 2:1 anamorphic prism pair (see details in <a class="reference internal" href="../calibration/optics_alignment.html"><span class="doc">Optics Alignment</span></a>). The quarter waveplate and half waveplate are used to tune the power reflected from the polarizing beam splitter (we found the light had a some circular polarization).</p>
+<p>The optical fiber on the excitation path serves two main purposes. First, since it is a single mode fiber, it acts as a spatial filter for the excitation beam to produce a clean Gaussian profile at the output. Second, it decouples the alignment of the beam path relative to the objective with the alignment upstream for the laser sources (which as we have found has required several changes over the evolution of NV2). Thus, when we reinstalled the high power laser back on the setup, the beam only needed to be recoupled to the fiber, allowing for both lasers to be co-aligned with the objective. To couple both beams to the same fiber, we use a polarizing beam splitter (PBS), and each path can be independently aligned with a different set of mirrors (exact alignment steps are included in <a class="reference internal" href="../calibration/optics_alignment.html"><span class="doc">Optics Alignment</span></a>). The closer pair are mirrors from the fiber are fixed once both lasers are aligned to the fiber. Each beam then has two pairs of mirrors to independently optimize the fiber coupling (for the DLNSec one of these mirrors is the PBS).</p>
+<p>For confocal imaging, the green light out of the fiber is collimated and the beam diameter is magnified using two lenses in order to overlap with the objective aperture (<span class="math notranslate nohighlight">\(D\)</span>). We are using a Nikon CFI Plan Fluor 100X Oil, 1.3 NA objective. The effective focal length is <span class="math notranslate nohighlight">\(f_{obj} = 200 \text{ mm}/100 = 2 \text{ mm}\)</span>. From simple geometric optics, <span class="math notranslate nohighlight">\(D = 2 \times NA/f_{obj} = 5.2 \text{ mm}\)</span>, so the beam diameter is magnified to a size of 5-6 mm.</p>
+<p>The green light is routed into the science box and reflected off the dichroic mirror to pass through the objective which focuses the light into the sample. The diamond sample is mounted on top of a cover glass patterned with a microwave stripline structure also referred to as a coplanar waveguides (CPW).  Immersion oil is added between the objective front lens and the cover glass. The working distance (WD) of the objective is 0.16 mm for a cover glass thickness of 0.17 mm. This means the cover glass inner face closest to the objective is positioned 0.16 mm away in order for the focus of the objective to be at the diamond surface (the thickness of the CPW is only around 500 nm). See the schematic below for the arrangement of the sample relative to the objective.</p>
+<figure class="align-center" id="id10">
+<a class="reference internal image-reference" href="../_images/objective.png"><img alt="Objective and sample schematic" src="../_images/objective.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Schematic of the objective, cover glass (CG), and diamond sample arrangement.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>For the current NV2 sample, the NV layer is implanted at an approximate depth of 20 nm from the surface (this is well below the diffraction limit so we can treat the NV layer as effectively at the surface). To position the diamond surface at the objective focal plane, we perform a piezo scan along the axial (Z) direction and record the NV fluorescence profile measured with the SPCM (more details in <a class="reference internal" href="../calibration/sample_mounting.html"><span class="doc">Sample Mounting</span></a>).</p>
+<p>For a perfect Gaussian beam matched to the objective aperture (<span class="math notranslate nohighlight">\(D\)</span>) of the objective, the spot size (defined as the <span class="math notranslate nohighlight">\(1/e^2\)</span> beam diameter) of the green laser beam at the focal plane is <span class="math notranslate nohighlight">\(s\approx 1.83 \lambda/(2 NA) \approx 374\)</span> nm <a class="footnote-reference brackets" href="#thorlabs" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The optical initialization and readout signal of a single NV or ensemble area is strongly dependent on the intensity profile, which is determined from the incident power and spot size at the focal plane. The average intensity optimized for a single NV will determine the total power for the widefield illumination used for the SPAD measurements over the larger array.</p>
+<p>The fluorescence from a single NV can be treated as a point source and covers an emission band between 650 nm to 750 nm at room temperature<a class="footnote-reference brackets" href="#wiki1" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>). The fluorescence is collected along the same path through the objective and passes through the dichroic followed by a longpass filter to remove the stray excitation light. The optical resolution or FWHM of the lateral point spread function (PSF) of the objective is <span class="math notranslate nohighlight">\(0.51 \times \lambda /NA \approx 270\)</span> nm (or 460 nm 1/e^2 diameter) <a class="footnote-reference brackets" href="#leica" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. There are two paths for the collected NV fluorescence: one for confocal imaging onto the SPCM and one for widefield imaging onto the SPAD array. For the confocal path, the light is first imaged onto a pinhole to filter out any out of focus light from the background and to improve contrast. For free space confocal detection, there are typically two lenses after the pinhole: one to collimate the light which passes through the pinhole and one to focus the light onto the detector. Alternatively, for fiber-based detection, a single lens after the objective focuses the light onto the fiber which then acts as a pinhole. Our setup is a free space detection path, however we only use one lens after the pinhole to improve space efficiency. Following the ray optics equation for a thin lens (<span class="math notranslate nohighlight">\(\frac{1}{z} + \frac{1}{z'} \approx \frac{1}{f}\)</span>), the lens after the pinhole is positioned such that the light is focused onto the detector<a class="footnote-reference brackets" href="#salehteich" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#approx" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>. See the schematic below of the collection path.</p>
+<figure class="align-center" id="id11">
+<a class="reference internal image-reference" href="../_images/nv_collection_rays.png"><img alt="Collection path" src="../_images/nv_collection_rays.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Schematic of the collection path for the confocal microscope.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The first lens after the pinhole has a focal length of 100 mm, leading to an overall magnification of 50X from the focal plane of the objective to the image plane of this lens. Assuming the diffraction limited spot follows a gaussian profile, the spot size at the image plane would be 46 <span class="math notranslate nohighlight">\(\mu\)</span>m. We use a 50 <span class="math notranslate nohighlight">\(\mu\)</span>m pinhole, to remove any light collection from outside the diffraction-limited spot. With the pinhole, the axial resolution of the confocal microscope PSF can be calculated to be approximately <span class="math notranslate nohighlight">\(1.4 \lambda n /NA^2 \approx 1\)</span> <span class="math notranslate nohighlight">\(\mu\)</span>m.  From the diagram above, we can apply the ray optics equations to calculate the spot size of the image at the detector:
+$<span class="math notranslate nohighlight">\(
+M \approx \left| \frac{f}{z-f} \right| = \frac{2}{3}
+\)</span><span class="math notranslate nohighlight">\(
+The spot size is then \)</span>\approx 20 \mu<span class="math notranslate nohighlight">\(m, well within the 180 \)</span>\mu$m active area diameter.</p>
+<p>For the SPAD array path, we use a single lens to image the fluorescence onto the camera. The SPAD array sensor features 64x32 pixels, where each pixel is 150 <span class="math notranslate nohighlight">\(\mu\)</span>m wide (see image below). For SPAD readout of the NV array, we want each implantation spot in the sample (separated by 1<span class="math notranslate nohighlight">\(\mu\)</span>m) to be separated by at least two pixels in the image, thus creating a checkerboard pattern. This requires 300X magnification, achieved by using an imaging lens with a focal length of 600 mm. The total field of view of the objective is approximately 50 <span class="math notranslate nohighlight">\(\mu\)</span>m, which fits within the total sensor area. Given the limited laser power, we illuminate a single 5x5 NV array at a time, thus spanning only 9x9 pixels. To illuminate the full array, we send in collimated light by focusing the excitation beam at the back plane of the objective (the lens used for this is mounted on a flip-mount allowing the setup to alternate between confocal and widefield imaging modalities). This lens has a focal length of 1 m, which when combined with the objective as a telescope creates a collimated beam at the sample plane with a beam diameter of 10 <span class="math notranslate nohighlight">\(\mu\)</span>m, large enough to illuminate the array.</p>
+<figure class="align-center" id="id12">
+<a class="reference internal image-reference" href="../_images/SPAD_array.png"><img alt="SPAD array" src="../_images/SPAD_array.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The SPAD array camera from Micro Photon Devices. Image adapted from<a class="footnote-reference brackets" href="#wang2023" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="thorlabs" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Thorlabs, <em>Spot Size Tutorial</em>, <a class="reference external" href="https://www.thorlabs.com/high-power-microspot-r-focusing-objectives-for-vis-and-nir-lasers?tabName=Spot%20Size">https://www.thorlabs.com/high-power-microspot-r-focusing-objectives-for-vis-and-nir-lasers?tabName=Spot Size</a></p>
+</aside>
+<aside class="footnote brackets" id="wiki1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Wikipedia, <em>Nitrogen-vacancy center</em>, <a class="reference external" href="https://en.wikipedia.org/wiki/Nitrogen-vacancy_center">https://en.wikipedia.org/wiki/Nitrogen-vacancy_center</a></p>
+</aside>
+<aside class="footnote brackets" id="leica" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>Leica, <em>Full Width at Half Maximum (FWHM)</em>, <a class="reference external" href="https://www.leica-microsystems.com/science-lab/life-science/microscope-resolution-concepts-factors-and-calculation/">https://www.leica-microsystems.com/science-lab/life-science/microscope-resolution-concepts-factors-and-calculation/</a></p>
+</aside>
+<aside class="footnote brackets" id="salehteich" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">4</a><span class="fn-bracket">]</span></span>
+<p>B. E. A. Saleh and M. C. Teich, <em>Fundamentals of Photonics</em>, 3rd ed., Wiley, 2019.</p>
+</aside>
+<aside class="footnote brackets" id="approx" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">5</a><span class="fn-bracket">]</span></span>
+<p>Note we can apply the ray optics approximations since <span class="math notranslate nohighlight">\(z-f\ggtz_0\)</span> where <span class="math notranslate nohighlight">\(z_0\)</span> is the Rayleigh range.</p>
+</aside>
+<aside class="footnote brackets" id="wang2023" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">6</a><span class="fn-bracket">]</span></span>
+<p>https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202300046</p>
+</aside>
+</aside>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="rf_electronics.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">RF &amp; Control Electronics</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">System Overview</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Alex Ungar
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Optics &amp; Imaging</a><ul>
+<li><a class="reference internal" href="#design-requirements">Design Requirements</a></li>
+<li><a class="reference internal" href="#layout-of-the-optical-setup">Layout of the Optical Setup</a></li>
+<li><a class="reference internal" href="#photos">Photos</a></li>
+<li><a class="reference internal" href="#components">Components</a></li>
+<li><a class="reference internal" href="#operation">Operation</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=2709fde1"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    </body>
+</html>
