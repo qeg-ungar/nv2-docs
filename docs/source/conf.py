@@ -27,3 +27,8 @@ myst_enable_extensions = [
 html_theme = 'furo'
 html_static_path = ['_static']
 html_title = "NV2 Lab Manual"
+
+# -- Figure numbering ---------------------------------------------------------
+
+numfig = True
+numfig_format = {'figure': 'Figure %s'}
