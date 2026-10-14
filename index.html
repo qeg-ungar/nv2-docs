@@ -194,7 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="background/index.html">Background &amp; Motivation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="system_overview/index.html">System Overview</a><input aria-label="Toggle navigation of System Overview" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/optics.html">Optics &amp; Imaging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="system_overview/rf_electronics.html">RF &amp; Control Electronics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_overview/rf_electronics.html">Microwave &amp; RF Electronics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/diamond_sample.html">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/software.html">Software Organization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/pid_heater.html">PID Heater</a></li>
@@ -215,9 +215,11 @@
 <li class="toctree-l2"><a class="reference internal" href="experiments/automation.html">Automation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="publications/index.html">Publications</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="appendix/index.html">Appendix</a><input aria-label="Toggle navigation of Appendix" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="appendix/resources.html">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/documentations.html">Misc. Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/cpw_fabrication.html">CPW Fabrication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/repairs.html">Repairs &amp; Upgrades</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/future.html">Future improvements and upgrades</a></li>
@@ -265,7 +267,7 @@
 <h1>NV2 Lab Manual<a class="headerlink" href="#nv2-lab-manual" title="Link to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>Welcome to the Quantum Engineering Group’s NV2 lab manual. This experimental setup is used for controlling and imaging NV centers in diamond. This setup is designed to operate in several  modalities, both as a single and ensemble NV confocal microscope and as a widefield imaging system with a SPAD camera. This documentation covers the hardware assemblies, calibration procedures, and experimental protocols for operating the setup. The manual is organized into three main sections: <a class="reference internal" href="system_overview/index.html"><span class="doc">System Overview</span></a>, <a class="reference internal" href="calibration/index.html"><span class="doc">Alignment &amp; Calibration</span></a>, and <a class="reference internal" href="experiments/index.html"><span class="doc">Experiments &amp; Applications</span></a>. Also, in the <a class="reference internal" href="appendix/index.html"><span class="doc">Appendix</span></a> you can find an account of any major repairs and diagnostic tools for troubleshooting some common issues with the setup. This documentaion will assume basic familiary with NV center physics. For an in depth review on the topic, I recommend checking out the PhD thesis written by Masashi Hirose from QEG<a class="footnote-reference brackets" href="#hirose" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. Other relevant resources are included in the <a class="reference internal" href="appendix/index.html"><span class="doc">Appendix</span></a>.</p>
+<p>Welcome to the Quantum Engineering Group’s NV2 lab manual. This experimental setup is used for controlling and imaging NV centers in diamond. This setup is designed to operate in several  modalities, both as a single and ensemble NV confocal microscope and as a widefield imaging system with a SPAD camera. This documentation covers the hardware assemblies, calibration procedures, and experimental protocols for operating the setup. The manual is organized into three main sections: <a class="reference internal" href="system_overview/index.html"><span class="doc">System Overview</span></a>, <a class="reference internal" href="calibration/index.html"><span class="doc">Alignment &amp; Calibration</span></a>, and <a class="reference internal" href="experiments/index.html"><span class="doc">Experiments &amp; Applications</span></a>. The <a class="reference internal" href="publications/index.html"><span class="doc">Publications</span></a> section collects the papers based on experiments performed on NV2, along with the hardware configuration used for each. Also, in the <a class="reference internal" href="appendix/index.html"><span class="doc">Appendix</span></a> you can find an account of any major repairs and diagnostic tools for troubleshooting some common issues with the setup. This documentaion will assume basic familiary with NV center physics. For an in depth review on the topic, I recommend checking out the PhD thesis written by Masashi Hirose from QEG<a class="footnote-reference brackets" href="#hirose" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. Other relevant resources are included in the <a class="reference internal" href="appendix/index.html"><span class="doc">Appendix</span></a>.</p>
 <p>Some pictures of the setup are shown below. Most of the setup lives on or above the optical table, with the exception of the control electronics and computer. We will break down all of the important details on its construction and operation in the sections to come.</p>
 <figure style="margin: 1.5rem 0;">
   <div style="display: flex; gap: 0.75rem; align-items: center;">
@@ -318,7 +320,7 @@
 <li class="toctree-l1"><a class="reference internal" href="background/index.html">Background &amp; Motivation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="system_overview/index.html">System Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/optics.html">Optics &amp; Imaging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="system_overview/rf_electronics.html">RF &amp; Control Electronics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_overview/rf_electronics.html">Microwave &amp; RF Electronics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/diamond_sample.html">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/software.html">Software Organization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="system_overview/pid_heater.html">PID Heater</a></li>
@@ -339,9 +341,11 @@
 <li class="toctree-l2"><a class="reference internal" href="experiments/automation.html">Automation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="publications/index.html">Publications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix/index.html">Appendix</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="appendix/resources.html">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/documentations.html">Misc. Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/cpw_fabrication.html">CPW Fabrication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/repairs.html">Repairs &amp; Upgrades</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/future.html">Future improvements and upgrades</a></li>

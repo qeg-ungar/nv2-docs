@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Software Organization" href="software.html"><link rel="prev" title="RF &amp; Control Electronics" href="rf_electronics.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Software Organization" href="software.html"><link rel="prev" title="Microwave &amp; RF Electronics" href="rf_electronics.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Diamond Sample &amp; PCB - NV2 Lab Manual</title>
@@ -194,7 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../background/index.html">Background &amp; Motivation</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">System Overview</a><input aria-label="Toggle navigation of System Overview" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="optics.html">Optics &amp; Imaging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rf_electronics.html">RF &amp; Control Electronics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rf_electronics.html">Microwave &amp; RF Electronics</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="software.html">Software Organization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pid_heater.html">PID Heater</a></li>
@@ -215,9 +215,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../experiments/automation.html">Automation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../publications/index.html">Publications</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../appendix/index.html">Appendix</a><input aria-label="Toggle navigation of Appendix" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/resources.html">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/documentations.html">Misc. Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/cpw_fabrication.html">CPW Fabrication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/repairs.html">Repairs &amp; Upgrades</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/future.html">Future improvements and upgrades</a></li>
@@ -307,8 +309,8 @@ interfaces with the temperature control and positioning hardware.</p>
 <td><p>ppb</p></td>
 </tr>
 <tr class="row-even"><td><p>Surface cut</p></td>
-<td><p></p></td>
-<td><p>e.g., [100], [111]</p></td>
+<td><p>(001)</p></td>
+<td><p>[110] edges oriented perpendicular to the CPW channels</p></td>
 </tr>
 <tr class="row-odd"><td><p>Surface treatment</p></td>
 <td><p></p></td>
@@ -324,15 +326,8 @@ interfaces with the temperature control and positioning hardware.</p>
 </section>
 <section id="pcb-antenna">
 <h2>PCB Antenna<a class="headerlink" href="#pcb-antenna" title="Link to this heading">¶</a></h2>
-<p><em>Add: antenna geometry (loop, CPW, omega), characteristic impedance, resonance frequency, coupling to sample.</em></p>
-<figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="_static/images/pcb_antenna_layout.png"><img alt="PCB antenna layout" src="_static/images/pcb_antenna_layout.png" style="width: 60%;" />
-</a>
-<figcaption>
-<p><span class="caption-number">Figure 9 </span><span class="caption-text">PCB antenna layout.
-<em>(Figure placeholder.)</em></span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
+<p>The coplanar waveguide (CPW) and PCB that deliver the MW and RF fields to the sample are described
+in <a class="reference internal" href="rf_electronics.html#cpw-design"><span class="std std-ref">Microwave &amp; RF Electronics</span></a>.</p>
 </section>
 <section id="temperature-control">
 <h2>Temperature Control<a class="headerlink" href="#temperature-control" title="Link to this heading">¶</a></h2>
@@ -368,7 +363,7 @@ interfaces with the temperature control and positioning hardware.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">RF &amp; Control Electronics</div>
+                <div class="title">Microwave &amp; RF Electronics</div>
                 
               </div>
             </a>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Diamond Sample &amp; PCB" href="diamond_sample.html"><link rel="prev" title="Optics &amp; Imaging" href="optics.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>RF &amp; Control Electronics - NV2 Lab Manual</title>
+        <title>Microwave &amp; RF Electronics - NV2 Lab Manual</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -194,7 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../background/index.html">Background &amp; Motivation</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">System Overview</a><input aria-label="Toggle navigation of System Overview" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="optics.html">Optics &amp; Imaging</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">RF &amp; Control Electronics</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Microwave &amp; RF Electronics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diamond_sample.html">Diamond Sample &amp; PCB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="software.html">Software Organization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pid_heater.html">PID Heater</a></li>
@@ -215,9 +215,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../experiments/automation.html">Automation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../publications/index.html">Publications</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../appendix/index.html">Appendix</a><input aria-label="Toggle navigation of Appendix" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/resources.html">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/documentations.html">Misc. Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix/cpw_fabrication.html">CPW Fabrication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/repairs.html">Repairs &amp; Upgrades</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../appendix/future.html">Future improvements and upgrades</a></li>
@@ -261,123 +263,347 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section class="tex2jax_ignore mathjax_ignore" id="rf-control-electronics">
-<h1>RF &amp; Control Electronics<a class="headerlink" href="#rf-control-electronics" title="Link to this heading">¶</a></h1>
-<p>The RF and control electronics generate and synchronize all microwave, RF, and TTL signals
-for qubit control and readout.</p>
+          <section class="tex2jax_ignore mathjax_ignore" id="microwave-rf-electronics">
+<h1>Microwave &amp; RF Electronics<a class="headerlink" href="#microwave-rf-electronics" title="Link to this heading">¶</a></h1>
+<p>This page describes the electronics that generate, amplify, and deliver the microwave (MW) and
+radio-frequency (RF) pulses used for coherent spin control of the NV electronic spin, the dark
+electronic spins in the sample (referred to here as X spins; see <a class="reference internal" href="../publications/index.html#pub-cooper2020"><span class="std std-ref">Cooper et al., 2020</span></a>), and nearby nuclear spins.</p>
+<section id="design-requirements">
+<h2>Design Requirements<a class="headerlink" href="#design-requirements" title="Link to this heading">¶</a></h2>
+<p>The primary function of the MW electronics is to control the NV spin state. The spin state is
+manipulated with resonant MW pulses: the amplitude of the oscillating magnetic field at the NV resonance
+sets how fast the spin is driven (its Rabi frequency <span class="math notranslate nohighlight">\(\Omega\)</span>), and the phase of the pulse sets
+the axis of rotation on the Bloch sphere. For almost all of our experiments we drive the
+<span class="math notranslate nohighlight">\(m_s = 0 \leftrightarrow m_s = -1\)</span> transition, the lower frequency of the two NV spin transitions,</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+f_{-} = D - \gamma_e B_z,
+\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(D \approx 2.87\)</span> GHz is the zero-field splitting, <span class="math notranslate nohighlight">\(\gamma_e \approx 2.8\)</span> MHz/G is the
+electron gyromagnetic ratio, and <span class="math notranslate nohighlight">\(B_z\)</span> is the bias field along the NV axis. The bias magnet is usually positioned so that this transition spans roughly 1.9–2.9 GHz (<span class="math notranslate nohighlight">\(B_z\)</span> up to <span class="math notranslate nohighlight">\(\sim 350\)</span> G).</p>
+<p>The Rabi frequency is proportional to the MW field amplitude, and therefore to the square root of
+the delivered power, <span class="math notranslate nohighlight">\(\Omega \propto B_1 \propto \sqrt{P}\)</span>. Typical single-qubit gate times
+(like a <span class="math notranslate nohighlight">\(\pi\)</span> or <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse) range from <span class="math notranslate nohighlight">\(\sim 100\)</span> ns to 1 <span class="math notranslate nohighlight">\(\mu\)</span>s depending on the MW power. The maximum Rabi frequency is limited by
+how much current can flow through the MW stripline (see <a class="reference internal" href="#cpw-design"><span class="std std-ref">Coplanar Waveguide &amp; PCB</span></a>
+for details on the coplanar waveguide design). The measured limit is about 27 dBm CW near <span class="math notranslate nohighlight">\(f \approx D\)</span>, which agrees
+with the stripline’s measured maximum DC current of 0.15 A (assuming the thickness of the stripline is comparable to the skin depth for the conductor). For a matched <span class="math notranslate nohighlight">\(Z_0 = 50~\Omega\)</span> line, the peak
+current at 27 dBm (0.5 W) is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+I_\text{peak} = \sqrt{\frac{2P}{Z_0}} = \sqrt{\frac{2 \times 0.5~\text{W}}{50~\Omega}} \approx 0.14~\text{A}.
+\]</div>
+</div>
+<p><em>Add: link to the stripline failure-mode testing log.</em></p>
+<p>Beyond NV control, the setup is configured for several control applications and defect systems.
+It covers three frequency bands, each with its own amplifier chain:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Chain</p></th>
+<th class="head"><p>Target spins</p></th>
+<th class="head"><p>Frequency range</p></th>
+<th class="head"><p>Amplifier bandwidth</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MW-NV</p></td>
+<td><p>NV electronic spin (<span class="math notranslate nohighlight">\(m_s = 0 \leftrightarrow \pm 1\)</span>)</p></td>
+<td><p>1.9–3.9 GHz</p></td>
+<td><p>1.8–4.0 GHz</p></td>
+</tr>
+<tr class="row-odd"><td><p>MW-X</p></td>
+<td><p>Dark electronic spins (X or P1)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\lesssim 1\)</span> GHz</p></td>
+<td><p>20–1000 MHz</p></td>
+</tr>
+<tr class="row-even"><td><p>RF-n</p></td>
+<td><p>NV and X nuclear spins (¹⁵N, ¹H)</p></td>
+<td><p>0–15 MHz</p></td>
+<td><p>0.1–200 MHz</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For a dark electronic spin with <span class="math notranslate nohighlight">\(g \approx 2\)</span>, the resonance frequency is around <span class="math notranslate nohighlight">\(f_X \approx \gamma_e B_z \pm A/2\)</span> where the hyperfine shifts can be up to 100 MHz for the P1 center (¹⁵N, nuclear spin ½, in our implanted sample),
+which reaches <span class="math notranslate nohighlight">\(\sim 1\)</span> GHz over the same field range. Strictly speaking the field should be slightly reduced for the higher P1 resonance to be within the amplifier bandwidth. Lastly, not shown in the schematic, the
+setup can also drive strong magnetic-field gradients using a high-power MOSFET switch connected to both stripline channels (details on this configuration in <em>Add: link to the gradient switch design and implementation</em>).</p>
+</section>
+<section id="setup-overview">
+<h2>Setup Overview<a class="headerlink" href="#setup-overview" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#fig-mw-chain"><span class="std std-numref">Figure 6</span></a> shows the full MW/RF chain, from the OPX+ analog outputs to
+the stripline PCB.</p>
+<figure class="align-center" id="fig-mw-chain">
+<a class="reference internal image-reference" href="../_images/mw_chain_schematic.png"><img alt="MW/RF chain schematic" src="../_images/mw_chain_schematic.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 6 </span><span class="caption-text">Schematic of the MW/RF chain, configured for control of all three spin species. Thin lines are
+low-power signals from the OPX+ and SG384; thick lines are amplified MW/RF signals delivered to the
+stripline. The dotted path is the termination used in place of the X chain when only the NV and
+nuclear spins are driven and used similarly for other configurations with two tone control.</span><a class="headerlink" href="#fig-mw-chain" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 <section id="components">
 <h2>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><strong>QM OPX</strong> — quantum control processor; generates arbitrary waveforms for MW/RF pulses and TTL triggers</p></li>
-<li><p><strong>MW/RF chain</strong> — amplifiers, switches, combiners, and delivery to the sample PCB antenna</p></li>
-<li><p><strong>Signal generators</strong> — auxiliary CW sources for IQ mixing and frequency references</p></li>
-<li><p><strong>NI I/O Card</strong> — analog/digital I/O for slow control: piezo voltages, detector readout, analog monitoring</p></li>
-</ul>
-</section>
-<section id="system-architecture">
-<h2>System Architecture<a class="headerlink" href="#system-architecture" title="Link to this heading">¶</a></h2>
-<figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="_static/images/rf_electronics_diagram.png"><img alt="RF and control electronics block diagram" src="_static/images/rf_electronics_diagram.png" style="width: 90%;" />
-</a>
-<figcaption>
-<p><span class="caption-number">Figure 6 </span><span class="caption-text">Block diagram of the RF/electronics subsystem. Blue lines = MW/RF signals, black = TTL/control,
-orange = Ethernet/PCIe, purple = analog I/O.
-<em>(Figure placeholder — add annotated diagram.)</em></span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="qm-opx">
-<h2>QM OPX<a class="headerlink" href="#qm-opx" title="Link to this heading">¶</a></h2>
-<p>The OPX is the central controller. It connects to the PC via PCIe and is programmed using QUA (Quantum Orchestration Language).</p>
-<p><em>Add: OPX model, channel assignments, firmware version, QUA version.</em></p>
-<section id="channel-map">
-<h3>Channel Map<a class="headerlink" href="#channel-map" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>OPX Port</p></th>
-<th class="head"><p>Signal</p></th>
-<th class="head"><p>Destination</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p></p></td>
-<td><p></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-</section>
-<section id="mw-rf-chain">
-<h2>MW/RF Chain<a class="headerlink" href="#mw-rf-chain" title="Link to this heading">¶</a></h2>
-<p><em>Describe the signal chain from OPX analog output to the sample antenna: mixers, amplifiers, switches, power levels.</em></p>
-<figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="_static/images/mw_chain_schematic.png"><img alt="MW/RF chain schematic" src="_static/images/mw_chain_schematic.png" style="width: 80%;" />
-</a>
-<figcaption>
-<p><span class="caption-number">Figure 7 </span><span class="caption-text">Schematic of the MW/RF signal chain.
-<em>(Figure placeholder.)</em></span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
-<section id="iq-modulation">
-<h3>IQ Modulation<a class="headerlink" href="#iq-modulation" title="Link to this heading">¶</a></h3>
-<p><em>Add notes on IQ mixer configuration, LO source, IF bandwidth, image rejection.</em></p>
-</section>
-</section>
-<section id="signal-generators">
-<h2>Signal Generators<a class="headerlink" href="#signal-generators" title="Link to this heading">¶</a></h2>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Instrument</p></th>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Model</p></th>
-<th class="head"><p>Role</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p></p></td>
-<td><p></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="ni-i-o-card">
-<h2>NI I/O Card<a class="headerlink" href="#ni-i-o-card" title="Link to this heading">¶</a></h2>
-<p>The NI card handles slower analog and digital I/O that does not require the OPX’s timing precision.</p>
-<p><em>Add: NI card model, analog input/output channel count and voltage range, digital I/O lines.</em></p>
-<section id="ni-channel-map">
-<h3>NI Channel Map<a class="headerlink" href="#ni-channel-map" title="Link to this heading">¶</a></h3>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>NI Channel</p></th>
-<th class="head"><p>Signal</p></th>
 <th class="head"><p>Notes</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>AI0</p></td>
-<td><p></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p>FPGA</p></td>
+<td><p><a class="reference external" href="https://www.quantum-machines.co/products/opx/">Quantum Machines OPX+</a></p></td>
+<td><p>4 analog outputs, 2 analog inputs, 10 digital outputs; 1 GS/s, 16-bit, 400 MHz bandwidth, used as AWG, TTL driver, and SPCM signal acquisition</p></td>
 </tr>
-<tr class="row-odd"><td><p>AI1</p></td>
-<td><p></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p>Signal generators (×2)</p></td>
+<td><p><a class="reference external" href="https://www.thinksrs.com/products/sg380.html">SRS SG384</a>, Opt. 03</p></td>
+<td><p>DC–4.05 GHz; external IQ modulation for carriers 400 MHz–4.05 GHz</p></td>
 </tr>
-<tr class="row-even"><td><p>AO0</p></td>
-<td><p></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p>NV amplifier</p></td>
+<td><p><a class="reference external" href="https://www.minicircuits.com/pdfs/ZHL-16W-43-S+.pdf">Mini-Circuits ZHL-16W-43-S+</a></p></td>
+<td><p>1.8–4.0 GHz, 45 dB gain, 16 W</p></td>
+</tr>
+<tr class="row-odd"><td><p>X amplifier</p></td>
+<td><p><a class="reference external" href="https://www.minicircuits.com/pdfs/ZHL-20W-13+.pdf">Mini-Circuits ZHL-20W-13+</a></p></td>
+<td><p>20–1000 MHz, 50 dB gain, 20 W</p></td>
+</tr>
+<tr class="row-even"><td><p>RF amplifier</p></td>
+<td><p><a class="reference external" href="https://www.minicircuits.com/pdfs/LZY-22+.pdf">Mini-Circuits LZY-22+</a></p></td>
+<td><p>0.1–200 MHz, 43 dB gain, 30 W</p></td>
+</tr>
+<tr class="row-odd"><td><p>RF switch</p></td>
+<td><p><a class="reference external" href="https://www.minicircuits.com/pdfs/ZASWA-2-50DR+.pdf">Mini-Circuits ZASWA-2-50DR+</a></p></td>
+<td><p>Absorptive SPDT, DC–5 GHz, integrated TTL driver</p></td>
+</tr>
+<tr class="row-even"><td><p>Low-pass filter</p></td>
+<td><p><a class="reference external" href="https://www.minicircuits.com/pdfs/BLP-30+.pdf">Mini-Circuits BLP-30+</a></p></td>
+<td><p>DC–32 MHz passband, 0.5 W max input</p></td>
+</tr>
+<tr class="row-odd"><td><p>Attenuators</p></td>
+<td><p>Miscellaneous Mini-Circuits</p></td>
+<td><p>3 dB (Q2), 16 dB (RF chain), 2 × 20 dB (stripline terminations)</p></td>
+</tr>
+<tr class="row-even"><td><p>Terminations</p></td>
+<td><p>Mini-Circuits ANNE-50+</p></td>
+<td><p>50 Ω</p></td>
+</tr>
+<tr class="row-odd"><td><p>MW stripline</p></td>
+<td><p>Custom two-channel CPW on cover glass, custom PCB with 4 SMA connectors</p></td>
+<td><p>See <a class="reference internal" href="#cpw-design"><span class="std std-ref">Coplanar Waveguide &amp; PCB</span></a></p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>See <a class="reference internal" href="../appendix/documentations.html"><span class="doc">Misc. Documentation</span></a> for the full list of hardware manuals and spec sheets.</p>
+</section>
+<section id="pulse-generation-qm-opx">
+<h2>Pulse Generation (QM OPX+)<a class="headerlink" href="#pulse-generation-qm-opx" title="Link to this heading">¶</a></h2>
+<p>The QM OPX+ is the central instrument for generating the pulsed MW and RF waveforms, providing the function of an arbitrary waveform generator (AWG) among other capabilities. Our unit has
+four analog outputs, two analog inputs, and ten digital outputs. The analog outputs sample at
+1 GS/s with 16-bit resolution, a 400 MHz (3 dB) bandwidth, and a 1 V peak-to-peak swing into
+50 Ω. The pulse processor runs on a 250 MHz clock, so pulse timing has 4 ns granularity, with a
+minimum pulse length of 16 ns<a class="footnote-reference brackets" href="#opx" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<p>Pulse sequences are written in QUA, Quantum Machines’ pulse-level programming language, from a
+Python environment. Each program is compiled and executed in real time on the OPX+’s FPGA-based
+pulse processor (see <a class="reference internal" href="software.html"><span class="doc">Software Organization</span></a>). The OPX+ also generates the laser (and RF switch)
+TTL pulses on its digital outputs and reads in the SPCM signal on an analog input, so laser
+gating and photon acquisition are synchronized internally with the pulse sequence.</p>
+</section>
+<section id="iq-modulation">
+<h2>IQ Modulation<a class="headerlink" href="#iq-modulation" title="Link to this heading">¶</a></h2>
+<p>The NV and X chains each use two analog channels, one for the in-phase (I) and one for the
+quadrature (Q) waveform (I1/Q1 for the NV, I2/Q2 for X). These drive the external IQ inputs of an
+SRS SG384 signal generator. Its internal IQ modulator multiplies each waveform by its carrier (the
+local oscillator, LO), with the two LO copies 90° apart, and combines the products. For
+intermediate-frequency (IF) waveforms from the OPX+</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+s_I(t) = A_\text{IF}\cos(\omega_\text{IF} t + \phi), \qquad s_Q(t) = A_\text{IF}\sin(\omega_\text{IF} t + \phi),
+\]</div>
+</div>
+<p>and dimensionless LO quadratures <span class="math notranslate nohighlight">\(s_\text{LO}(t) = \cos(\omega_\text{LO} t)\)</span> and
+<span class="math notranslate nohighlight">\(\bar{s}_\text{LO}(t) = \sin(\omega_\text{LO} t)\)</span>, the upconverted MW signal is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+s_\text{MW}(t) \propto s_I(t)\,s_\text{LO}(t) - s_Q(t)\,\bar{s}_\text{LO}(t)
+= A_\text{IF}\cos\!\left[(\omega_\text{LO} + \omega_\text{IF})\,t + \phi\right],
+\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(\omega = 2\pi f\)</span>. The output is a single tone at the upper sideband, <span class="math notranslate nohighlight">\(f_\text{LO} + f_\text{IF}\)</span>,
+and it carries the phase <span class="math notranslate nohighlight">\(\phi\)</span> of the IF waveforms. Adding the two products instead of subtracting
+them selects the lower sideband, at <span class="math notranslate nohighlight">\(f_\text{LO} - f_\text{IF}\)</span> with phase <span class="math notranslate nohighlight">\(-\phi\)</span>. Unlike a single
+mixer, which splits its output equally between the two sidebands, the two IQ paths add on one
+sideband and cancel on the other.</p>
+<p>The phase <span class="math notranslate nohighlight">\(\phi\)</span> of the IF waveforms therefore sets the phase of the MW pulse (the rotation axis),
+while the IF amplitude <span class="math notranslate nohighlight">\(A_\text{IF}\)</span> can be used to control power (the Rabi frequency). The exact power depends on both <span class="math notranslate nohighlight">\(A_\text{IF}\)</span> (set in volts) and the SG384 LO amplitude (set in dBm). The SG384 IQ inputs are
+50 Ω with a full scale of <span class="math notranslate nohighlight">\(\sqrt{s_I^2 + s_Q^2} = 0.5\)</span> V, matching the ±0.5 V output range of the OPX+, and the modulation
+bandwidth is 200 MHz<a class="footnote-reference brackets" href="#sg384" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. A real mixer adds DC offsets and I/Q amplitude and phase imbalance,
+which produce LO leakage and an image sideband at <span class="math notranslate nohighlight">\(f_\text{LO} - f_\text{IF}\)</span>. These are corrected
+in the QUA configuration (see <a class="reference internal" href="../calibration/iq_calibration.html"><span class="doc">IQ Calibration</span></a>).</p>
+<p>The SG384’s external IQ modulation only works for carrier frequencies between 400 MHz and
+4.05 GHz<a class="footnote-reference brackets" href="#sg384" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. The NV band is well inside this range, but the X chain’s LO must be set at or
+above 400 MHz.</p>
+</section>
+<section id="nv-and-x-chains">
+<h2>NV and X Chains<a class="headerlink" href="#nv-and-x-chains" title="Link to this heading">¶</a></h2>
+<p>The SG384 outputs are amplified by a Mini-Circuits ZHL-16W-43-S+ for the NV band (MW-NV) and a
+ZHL-20W-13+ for the X band (MW-X). Both amplifiers can deliver far more power (+42 and +43 dBm
+saturated) than the <span class="math notranslate nohighlight">\(\sim 27\)</span> dBm the stripline tolerates, so in practice the stripline sets the
+power limit, not the amplifiers. For added safety,
+it would be worthwhile adding attenuators before the amplifier based on the maximum output power from the IQ modulated signal from the SG384, so that the power never exceeds this limit. For a reference on CPW input power to Rabi frequency see <a class="reference internal" href="#cpw-design"><span class="std std-ref">Coplanar Waveguide &amp; PCB</span></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>With 45–50 dB of amplifier gain, an SG384 output of only about −20 dBm already reaches the
+stripline’s <span class="math notranslate nohighlight">\(\sim 27\)</span> dBm limit. Check the power delivered to the stripline before increasing the
+SG384 output level or the pulse amplitudes in the QUA configuration.</p>
+</div>
+</section>
+<section id="rf-nuclear-spin-chain">
+<h2>RF Nuclear Spin Chain<a class="headerlink" href="#rf-nuclear-spin-chain" title="Link to this heading">¶</a></h2>
+<p>Nuclear spin frequencies are well within the OPX+ output bandwidth (highest frequency set by the X1 hydrogen spin at around 14 MHz; see <a class="reference internal" href="../publications/index.html#pub-ungar2025"><span class="std std-ref">Ungar et al., 2025</span></a>), so the RF pulses
+are synthesized directly by the OPX+ without upconversion. With all four analog outputs already
+used by the NV and X chains, we reuse the X chain’s I channel (I2) for RF pulses, since RF and X
+pulses are never applied simultaneously. A tee splits I2 between the X-chain SG384 and the RF chain.
+The RF waveform therefore also reaches the X-chain SG384 during RF pulses, but the resulting upconverted
+output is far off resonance from the X spins and has no effect.</p>
+<p>Because of the tee, the OPX+ output on I2 drives two 50 Ω inputs in parallel (25 Ω), which reduces
+its voltage to 2/3 of the value into a single matched load (<span class="math notranslate nohighlight">\(20\log_{10}(2/3) \approx -3.5\)</span> dB). A
+3 dB attenuator on Q2 applies nearly the same reduction to the Q channel, keeping the I and Q
+amplitudes into the X-chain SG384 balanced. The small remaining imbalance is corrected for in software by the IQ
+calibration settings.</p>
+<p>A TTL output from the OPX+ gates a ZASWA-2-50DR+ switch at the input of the RF chain. The
+switch passes I2 into the RF chain only during RF pulses, which keeps the X waveforms out of the
+RF chain and stops other low-frequency noise from passing through the amplifier onto the
+stripline. The LZY-22+ has a built-in blanking input, but its 64 ms turn-on time is far too slow
+to gate individual pulses<a class="footnote-reference brackets" href="#lzy" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. After the switch, the signal is amplified by the LZY-22+
+(0.1–200 MHz, 43 dB gain) and passes through a BLP-30+ low-pass filter before reaching the
+stripline; the filter passes DC–32 MHz and rejects 61–200 MHz by more than 40 dB.</p>
+<p>A 16 dB attenuator before the amplifier limits the maximum power of the RF signal to below 0.5 W
+(27 dBm), the limit of both the stripline and the BLP-30+. At full OPX+ output (+4 dBm into
+50 Ω), the tee (−3.5 dB), the switch insertion loss (−1.3 dB), the 16 dB attenuator, and the
+43 dB amplifier gain give a maximum of about +26 dBm at the stripline.</p>
+</section>
+<section id="coplanar-waveguide-pcb">
+<span id="cpw-design"></span><h2>Coplanar Waveguide &amp; PCB<a class="headerlink" href="#coplanar-waveguide-pcb" title="Link to this heading">¶</a></h2>
+<p>The MW and RF fields are delivered to the sample by a custom two-channel coplanar waveguide (CPW),
+originally designed by Alex Cooper and related to the ultra-broadband CPW of Jia et al.<a class="footnote-reference brackets" href="#jia2018" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>. The
+goal of the design is uniform transmission across a wide bandwidth, covering both the NV and
+dark-spin bands. The CPW has two central conductors, one for each channel, between two ground planes
+(<a class="reference internal" href="#fig-cpw-layout"><span class="std std-numref">Figure 7</span></a>). Each central conductor is 2.2 mm wide at the edge of the
+cover glass and tapers to 75 µm over the central 5 mm of the waveguide. There, the gap between the
+two central conductors as well as the gap between each conductor and its ground plane are both 25 µm. The
+NVs are imaged through the central 25 µm gap between the conductors, where the NVs are equidistant from both conductors, so either channel drives them equally.</p>
+<p>The key design criterion is maximizing AC current density through the stripline below the maximum limit before burning out the conductor (as the magnetic field strength scales with I/r). This takes into account both current carrying capacity limited by the cross-sectional area of the channel as well as the impedance match over the target bandwidth between the PCB and the stripline interface. Proper matching is achieved through the tapered profile and can be simulated with COMSOL. Empirically, with an input power of 22 dBm at 2.8 GHz we measure an NV Rabi frequency of approximately 18 MHz.</p>
+<p>This is consistent with a rough estimate. At 22 dBm the peak current is
+<span class="math notranslate nohighlight">\(I = \sqrt{2P/Z_0} \approx 80\)</span> mA. Treating the conductor as a thin wire at its edge, a distance
+<span class="math notranslate nohighlight">\(r \approx 12.5\)</span> µm from NVs at the center of the gap, the MW field is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+B_1 \approx \frac{\mu_0 I}{2\pi r} \approx 1.3~\text{mT}~(13~\text{G}).
+\]</div>
+</div>
+<p>Only the component of <span class="math notranslate nohighlight">\(B_1\)</span> perpendicular to the NV axis drives the spin. For the
+<span class="math notranslate nohighlight">\(m_s = 0 \leftrightarrow -1\)</span> transition, the Rabi frequency (in frequency units, with
+<span class="math notranslate nohighlight">\(\gamma_e \approx 2.8\)</span> MHz/G) is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+\Omega = \frac{\gamma_e B_1 \sin\theta}{\sqrt{2}} \approx 25~\text{MHz} \times \sin\theta,
+\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(\theta\)</span> is the angle between <span class="math notranslate nohighlight">\(B_1\)</span> and the NV axis. At the center of the gap the field points
+out of the plane of the CPW, normal to the diamond’s (001) surface. The diamond is mounted with its
+[110] edges perpendicular to the CPW channels. All four NV orientations (along <span class="math notranslate nohighlight">\(\langle 111 \rangle\)</span>)
+make the same angle with [001], <span class="math notranslate nohighlight">\(\cos\theta = 1/\sqrt{3}\)</span> (<span class="math notranslate nohighlight">\(\theta \approx 54.7°\)</span>), so the MW drives
+every orientation equally, with <span class="math notranslate nohighlight">\(\sin\theta = \sqrt{2/3} \approx 0.82\)</span> and <span class="math notranslate nohighlight">\(\Omega \approx 21\)</span> MHz. The thin-wire approximation places all of
+the current at the conductor edge, so it slightly overestimates the field.</p>
+<figure class="align-center" id="fig-cpw-layout">
+<a class="reference internal image-reference" href="../_images/cpw_layout.png"><img alt="CPW layout" src="../_images/cpw_layout.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 7 </span><span class="caption-text">CPW layout on the 18 × 18 mm cover glass, drawn from the GDS file. Copper is shown in gold and the
+gaps (bare cover glass) in light gray. The inset shows the center of the
+waveguide, where the two 75 µm central conductors are separated by the 25 µm imaging gap.</span><a class="headerlink" href="#fig-cpw-layout" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The CPW is patterned onto an 18 × 18 × 0.17 mm cover glass by direct-write UV lithography and
+e-beam evaporation of 500 nm of Cu (on a 10 nm Ti adhesion layer), followed by lift-off. The full
+process and the design files are in <a class="reference internal" href="../appendix/cpw_fabrication.html"><span class="doc">CPW Fabrication</span></a>. The Cu
+film is thinner than the skin depth at all of our operating frequencies,</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+\delta = \sqrt{\frac{\rho}{\pi f \mu_0}} \approx 1~\mu\text{m} \quad \text{at } f = 4~\text{GHz},
+\]</div>
+</div>
+<p>for copper (<span class="math notranslate nohighlight">\(\rho \approx 1.7 \times 10^{-8}~\Omega\,\text{m}\)</span>), so the current flows through the
+full thickness of the film.</p>
+<p>The cover glass is mounted and soldered onto a custom PCB, designed by Mo Chen, with four SMA
+connectors, one at each end of the two channels. The ends of the central conductors and the ground
+planes are soldered to pins on the PCB at the edges of the cover glass.</p>
+<figure style="margin: 1.5rem 0;">
+  <div style="display: flex; gap: 0.75rem; align-items: flex-start; justify-content: center; flex-wrap: wrap;">
+    <div style="text-align: center;">
+      <img src="../_static/images/diamond_cpw.jpg" style="display: block; margin: 0 auto; height: 340px; width: auto; max-width: 100%; object-fit: contain;">
+      <div style="font-size: 0.85em; margin-top: 0.25rem;">(a)</div>
+    </div>
+    <div style="text-align: center;">
+      <img src="../_static/images/cpw_pcb.jpg" style="display: block; margin: 0 auto; height: 340px; width: auto; max-width: 100%; object-fit: contain;">
+      <div style="font-size: 0.85em; margin-top: 0.25rem;">(b)</div>
+    </div>
+  </div>
+  <figcaption style="text-align: center; font-size: 0.9em; margin-top: 0.5rem;">
+    (a) Diamond sample mounted on the CPW cover glass, viewed through a microscope eyepiece. The narrow section of the CPW runs horizontally across the diamond. (b) CPW cover glass soldered onto the PCB in the sample mount under the objective, with the four SMA cables connected.
+  </figcaption>
+</figure></section>
+<section id="stripline-connections">
+<h2>Stripline Connections<a class="headerlink" href="#stripline-connections" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#fig-mw-chain"><span class="std std-numref">Figure 6</span></a> shows the configuration for experiments in which all three spins are controlled within the same pulse sequence. The NV and X amplifiers drive opposite ends of the same stripline (Ch1), and the RF
+chain drives Ch2. Since the RF drive has the highest power requirements, it is connected to its own CPW channel and terminated into 50 Ω through a 20 dB attenuator.</p>
+<p>Connecting both the NV and X amplifiers to one stripline is certainly not optimal, since each
+amplifier’s output is delivered into the other amplifier’s output port. It is a workaround for not
+having a high-power combiner covering both frequency bands. Both amplifiers are protected against
+reflected power: the ZHL-16W-43-S+ is rated to survive an open or short load at full CW output, and
+the ZHL-20W-13+ survives a full mismatch as long as its input power stays below −13 dBm<a class="footnote-reference brackets" href="#zhl20" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>. At the power levels allowed by the stripline, both amplifiers operate far below these limits.</p>
+<p>For experiments that don’t require driving all three spins, the connections can be changed, since
+the two striplines are equivalent. For example, for NV + nuclear spin experiments the X chain is
+disconnected and Ch1 is terminated through a second 20 dB attenuator into 50 Ω (dotted path in
+<a class="reference internal" href="#fig-mw-chain"><span class="std std-numref">Figure 6</span></a>).</p>
 </section>
 </section>
-</section>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="opx" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Quantum Machines, <em>OPX+ Specifications</em>, document v4.0 (QOP firmware v2.2).</p>
+</aside>
+<aside class="footnote brackets" id="sg384" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>Stanford Research Systems, <em>SG380 Series RF Signal Generators</em> datasheet, <a class="reference external" href="https://www.thinksrs.com/products/sg380.html">https://www.thinksrs.com/products/sg380.html</a></p>
+</aside>
+<aside class="footnote brackets" id="lzy" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p>Mini-Circuits, <em>LZY-22+ High Power Amplifier</em> datasheet, <a class="reference external" href="https://www.minicircuits.com/pdfs/LZY-22+.pdf">https://www.minicircuits.com/pdfs/LZY-22+.pdf</a></p>
+</aside>
+<aside class="footnote brackets" id="jia2018" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">4</a><span class="fn-bracket">]</span></span>
+<p>W. Jia, Z. Shi, X. Qin, X. Rong, and J. Du, <em>Ultra-broadband coplanar waveguide for optically detected magnetic resonance of nitrogen-vacancy centers in diamond</em>, Review of Scientific Instruments, vol. 89, 064705, 2018. <a class="reference external" href="https://doi.org/10.1063/1.5028335">https://doi.org/10.1063/1.5028335</a></p>
+</aside>
+<aside class="footnote brackets" id="zhl20" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">5</a><span class="fn-bracket">]</span></span>
+<p>Mini-Circuits, <em>ZHL-20W-13+ High Power Amplifier</em> datasheet, <a class="reference external" href="https://www.minicircuits.com/pdfs/ZHL-20W-13+.pdf">https://www.minicircuits.com/pdfs/ZHL-20W-13+.pdf</a></p>
+</aside>
+</aside>
 
         </article>
       </div>
@@ -434,22 +660,16 @@ orange = Ethernet/PCIe, purple = analog I/O.
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">RF &amp; Control Electronics</a><ul>
+<li><a class="reference internal" href="#">Microwave &amp; RF Electronics</a><ul>
+<li><a class="reference internal" href="#design-requirements">Design Requirements</a></li>
+<li><a class="reference internal" href="#setup-overview">Setup Overview</a></li>
 <li><a class="reference internal" href="#components">Components</a></li>
-<li><a class="reference internal" href="#system-architecture">System Architecture</a></li>
-<li><a class="reference internal" href="#qm-opx">QM OPX</a><ul>
-<li><a class="reference internal" href="#channel-map">Channel Map</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#mw-rf-chain">MW/RF Chain</a><ul>
+<li><a class="reference internal" href="#pulse-generation-qm-opx">Pulse Generation (QM OPX+)</a></li>
 <li><a class="reference internal" href="#iq-modulation">IQ Modulation</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#signal-generators">Signal Generators</a></li>
-<li><a class="reference internal" href="#ni-i-o-card">NI I/O Card</a><ul>
-<li><a class="reference internal" href="#ni-channel-map">NI Channel Map</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#nv-and-x-chains">NV and X Chains</a></li>
+<li><a class="reference internal" href="#rf-nuclear-spin-chain">RF Nuclear Spin Chain</a></li>
+<li><a class="reference internal" href="#coplanar-waveguide-pcb">Coplanar Waveguide &amp; PCB</a></li>
+<li><a class="reference internal" href="#stripline-connections">Stripline Connections</a></li>
 </ul>
 </li>
 </ul>
@@ -465,5 +685,7 @@ orange = Ethernet/PCIe, purple = analog I/O.
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

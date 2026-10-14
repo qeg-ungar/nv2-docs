@@ -30,22 +30,14 @@ Photograph of the diamond sample mounted on the PCB.
 |-----------|-------|-------|
 | Type | | e.g., electronic grade, CVD |
 | NV density | | ppb |
-| Surface cut | | e.g., [100], [111] |
+| Surface cut | (001) | [110] edges oriented perpendicular to the CPW channels |
 | Surface treatment | | e.g., acid clean, annealing |
 | Dimensions | | mm × mm × mm |
 
 ## PCB Antenna
 
-*Add: antenna geometry (loop, CPW, omega), characteristic impedance, resonance frequency, coupling to sample.*
-
-```{figure} ../_static/images/pcb_antenna_layout.png
-:alt: PCB antenna layout
-:width: 60%
-:align: center
-
-PCB antenna layout.
-*(Figure placeholder.)*
-```
+The coplanar waveguide (CPW) and PCB that deliver the MW and RF fields to the sample are described
+in {ref}`Microwave & RF Electronics <cpw-design>`.
 
 ## Temperature Control
 
