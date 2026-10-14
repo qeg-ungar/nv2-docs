@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the Quantum Engineering Group's NV2 lab manual. This experimental setup is used for controlling and imaging NV centers in diamond. This setup is designed to operate in several  modalities, both as a single and ensemble NV confocal microscope and as a widefield imaging system with a SPAD camera. This documentation covers the hardware assemblies, calibration procedures, and experimental protocols for operating the setup. The manual is organized into three main sections: {doc}`System Overview <system_overview/index>`, {doc}`Alignment & Calibration <calibration/index>`, and {doc}`Experiments & Applications <experiments/index>`. Also, in the {doc}`Appendix <appendix/index>` you can find an account of any major repairs and diagnostic tools for troubleshooting some common issues with the setup. This documentaion will assume basic familiary with NV center physics. For an in depth review on the topic, I recommend checking out the PhD thesis written by Masashi Hirose from QEG[^Hirose]. Other relevant resources are included in the {doc}`Appendix <appendix/index>`.
+Welcome to the Quantum Engineering Group's NV2 lab manual. This experimental setup is used for controlling and imaging NV centers in diamond. This setup is designed to operate in several  modalities, both as a single and ensemble NV confocal microscope and as a widefield imaging system with a SPAD camera. This documentation covers the hardware assemblies, calibration procedures, and experimental protocols for operating the setup. The manual is organized into three main sections: {doc}`System Overview <system_overview/index>`, {doc}`Alignment & Calibration <calibration/index>`, and {doc}`Experiments & Applications <experiments/index>`. The {doc}`Publications <publications/index>` section collects the papers based on experiments performed on NV2, along with the hardware configuration used for each. Also, in the {doc}`Appendix <appendix/index>` you can find an account of any major repairs and diagnostic tools for troubleshooting some common issues with the setup. This documentaion will assume basic familiary with NV center physics. For an in depth review on the topic, I recommend checking out the PhD thesis written by Masashi Hirose from QEG[^Hirose]. Other relevant resources are included in the {doc}`Appendix <appendix/index>`.
 
 Some pictures of the setup are shown below. Most of the setup lives on or above the optical table, with the exception of the control electronics and computer. We will break down all of the important details on its construction and operation in the sections to come. 
 
@@ -43,6 +43,7 @@ background/index
 system_overview/index
 calibration/index
 experiments/index
+publications/index
 appendix/index
 ```
 

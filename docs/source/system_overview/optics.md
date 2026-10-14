@@ -13,7 +13,7 @@ and widefield imaging by adjusting the excitation beam profile at the objective 
 routing the detection path to the corresponding detector (SPCM or SPAD array). Both detection
 paths are co-aligned with the excitation focus at the objective focal plane.
 
-For pulsed experiments, the excitation laser must be modulated with a rise time on the order of
+For pulsed experiments on single NVs, the excitation laser must be modulated with a rise time on the order of
 100 ns and achieve pulse durations on the order of 1 $\mu\text{s}$ for efficient spin polarization, with ~ 0.5 mW laser power before the objective. The
 extinction ratio (leakage light when the laser is gated off) must exceed 40 dB to avoid
 repolarization during microwave control. For widefield experiments, the excitation intensity over
