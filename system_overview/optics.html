@@ -296,13 +296,14 @@ the fiber coupling to the objective, and the two detection channels.</p>
 </figcaption>
 </figure>
 <figure style="margin: 1.5rem 0;">
-  <div style="display: flex; gap: 0.75rem; align-items: flex-start; justify-content: center; flex-wrap: wrap;">
-    <div style="text-align: center;">
-      <img src="../_static/images/excitation_photo.png" style="display: block; margin: 0 auto; height: 340px; width: auto; max-width: 100%; object-fit: contain;">
+  <!-- flex-grow = image aspect ratio (width/height), so both photos share one row at equal height -->
+  <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+    <div style="flex: 1.87 1 0; min-width: 0; text-align: center;">
+      <a href="../_static/images/excitation_photo.png" target="_blank" rel="noopener"><img src="../_static/images/excitation_photo.png" alt="Excitation optics" style="display: block; width: 100%; height: auto;"></a>
       <div style="font-size: 0.85em; margin-top: 0.25rem;">(a)</div>
     </div>
-    <div style="text-align: center;">
-      <img src="../_static/images/detection_photo.png" style="display: block; margin: 0 auto; height: 340px; width: auto; max-width: 100%; object-fit: contain;">
+    <div style="flex: 0.75 1 0; min-width: 0; text-align: center;">
+      <a href="../_static/images/detection_photo.png" target="_blank" rel="noopener"><img src="../_static/images/detection_photo.png" alt="Collection optics" style="display: block; width: 100%; height: auto;"></a>
       <div style="font-size: 0.85em; margin-top: 0.25rem;">(b)</div>
     </div>
   </div>
@@ -361,11 +362,15 @@ the fiber coupling to the objective, and the two detection channels.</p>
 <td><p><a class="reference external" href="https://www.thorlabs.com/item/DMLP567">Thorlabs DMLP567</a></p></td>
 <td><p>567 nm cut-on</p></td>
 </tr>
-<tr class="row-even"><td><p>SPCM (Single-Photon Counting Module)</p></td>
+<tr class="row-even"><td><p>Photodetector</p></td>
+<td><p><a class="reference external" href="https://www.thorlabs.com/item/DET36A">Thorlabs DET36A</a></p></td>
+<td><p>Si biased detector, 350–1100 nm; detects the excitation light reflected by the reflective ND filter</p></td>
+</tr>
+<tr class="row-odd"><td><p>SPCM (Single-Photon Counting Module)</p></td>
 <td><p><a class="reference external" href="https://www.digikey.com/en/products/detail/excelitas-technologies/SPCM-AQRH-15-FC/6235282">Excelitas SPCM-AQRH-15-FC</a></p></td>
 <td><p>Confocal detection</p></td>
 </tr>
-<tr class="row-odd"><td><p>SPAD camera</p></td>
+<tr class="row-even"><td><p>SPAD camera</p></td>
 <td><p><a href="../_static/hardware/SPC3_user_manual_2.2.0B.pdf" target="_blank" rel="noopener">Micro Photon Devices SPC3</a></p></td>
 <td><p>Widefield detection, 64x32 pixel array</p></td>
 </tr>
@@ -402,17 +407,18 @@ exact procedure). The mirror pair closest to the fiber is fixed once both lasers
 <section id="objective-sample-interface">
 <h2>Objective &amp; Sample Interface<a class="headerlink" href="#objective-sample-interface" title="Link to this heading">¶</a></h2>
 <p>For confocal imaging, the excitation light out of the fiber is collimated and magnified before the objective using two lenses as a telescope. Since we use the high power Sprout laser for both confocal and widefield measurements, there is an ND filter located on a flip mount (not shown in the schematic) to attenuate the power accordingly. The focal lengths of the lenses for the telescope are chosen to magnify the beam to match the back aperture of the objective, <span class="math notranslate nohighlight">\(D\)</span>. We use a Nikon CFI
-Plan Fluor 100X Oil, 1.3 NA objective, with effective focal length</p>
+Plan Fluor 100X Oil, 1.3 NA objective. Its effective focal length is set by the magnification
+<span class="math notranslate nohighlight">\(M = 100\)</span> and the focal length of the Nikon tube lens it is designed for, <span class="math notranslate nohighlight">\(f_\text{tube} = 200\)</span> mm:</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[
-f_\text{obj} = \frac{200~\text{mm}}{100} = 2~\text{mm}.
+f_\text{obj} = \frac{f_\text{tube}}{M} = \frac{200~\text{mm}}{100} = 2~\text{mm}.
 \]</div>
 </div>
 <p>From geometric optics, the objective aperture is <span class="math notranslate nohighlight">\(D = 2\times\text{NA}\times f_\text{obj} \approx
 5.2\)</span> mm. The green light enters the science box and is reflected off the dichroic mirror and sent through the objective (<a class="reference internal" href="#fig-objective-schematic"><span class="std std-numref">Figure 3</span></a>).
 The diamond sample is mounted on a cover glass patterned with a microwave stripline (also referred to as a coplanar
-waveguide or CPW). Immersion oil is placed between the objective’s front lens and the cover glass. The
+waveguide or CPW; see <a class="reference internal" href="rf_electronics.html#cpw-design"><span class="std std-ref">Coplanar Waveguide &amp; PCB</span></a>). Immersion oil is placed between the objective’s front lens and the cover glass. The
 objective’s working distance (WD) is 0.16 mm for a 0.17 mm cover glass, so the cover glass surface
 closest to the objective sits 0.16 mm away when the objective is focused at the diamond surface
 (the CPW itself is only <span class="math notranslate nohighlight">\(\sim 500\)</span> nm thick, negligible on this scale).</p>
@@ -506,7 +512,7 @@ only a single 5<span class="math notranslate nohighlight">\(\times\)</span>5 NV 
 <p>To illuminate the full array, collimated light is focused at the objective’s back aperture using a
 flip-mounted lens (allowing the setup to switch between confocal and widefield modes). This lens
 has a 1 m focal length. Combined with the objective as a telescope, it is designed to produce a collimated beam
-at the sample plane with a 10 <span class="math notranslate nohighlight">\(\mu\)</span>m diameter which is large enough to illuminate the array (we measure a diameter of 6 <span class="math notranslate nohighlight">\(\mu\)</span>m in the <a class="reference internal" href="../calibration/optics_alignment.html"><span class="doc">alignment</span></a> section).</p>
+at the sample plane with a 10 <span class="math notranslate nohighlight">\(\mu\)</span>m diameter. This diameter is larger than the span of the array but chosen so the illuminated area over the array has a more uniform power distribution (with a tradeoff of having to use more total laser power to match the optimal intensity per NV). We find after alignment that the beam diameter is approximately 7.5 <span class="math notranslate nohighlight">\(\mu\)</span>m (see the <a class="reference internal" href="../calibration/optics_alignment.html"><span class="doc">alignment</span></a> section).</p>
 <figure class="align-center" id="fig-spad-array">
 <a class="reference internal image-reference" href="../_images/SPAD_array.png"><img alt="SPAD array" src="../_images/SPAD_array.png" style="width: 60%;" />
 </a>

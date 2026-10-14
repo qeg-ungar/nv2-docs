@@ -37,13 +37,14 @@ Schematic of the NV fluorescence microscope setup for confocal and widefield ima
 
 ```{raw} html
 <figure style="margin: 1.5rem 0;">
-  <div style="display: flex; gap: 0.75rem; align-items: flex-start; justify-content: center; flex-wrap: wrap;">
-    <div style="text-align: center;">
-      <img src="../_static/images/excitation_photo.png" style="display: block; margin: 0 auto; height: 340px; width: auto; max-width: 100%; object-fit: contain;">
+  <!-- flex-grow = image aspect ratio (width/height), so both photos share one row at equal height -->
+  <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+    <div style="flex: 1.87 1 0; min-width: 0; text-align: center;">
+      <a href="../_static/images/excitation_photo.png" target="_blank" rel="noopener"><img src="../_static/images/excitation_photo.png" alt="Excitation optics" style="display: block; width: 100%; height: auto;"></a>
       <div style="font-size: 0.85em; margin-top: 0.25rem;">(a)</div>
     </div>
-    <div style="text-align: center;">
-      <img src="../_static/images/detection_photo.png" style="display: block; margin: 0 auto; height: 340px; width: auto; max-width: 100%; object-fit: contain;">
+    <div style="flex: 0.75 1 0; min-width: 0; text-align: center;">
+      <a href="../_static/images/detection_photo.png" target="_blank" rel="noopener"><img src="../_static/images/detection_photo.png" alt="Collection optics" style="display: block; width: 100%; height: auto;"></a>
       <div style="font-size: 0.85em; margin-top: 0.25rem;">(b)</div>
     </div>
   </div>
@@ -67,6 +68,7 @@ Schematic of the NV fluorescence microscope setup for confocal and widefield ima
 | AOM telescope lenses | Thorlabs LA1422-A ($f_1$ = 400 mm), LA1422-A ($f_2$ = 40 mm) | Reduced beam size for faster switching |
 | Objective telescope lenses | Thorlabs LA1422-A ($f_1$ = 40 mm), LA1509-A ($f_2$ = 100 mm) | Magnifies beam to match the objective aperture |
 | Dichroic mirror | [Thorlabs DMLP567](https://www.thorlabs.com/item/DMLP567) | 567 nm cut-on |
+| Photodetector | [Thorlabs DET36A](https://www.thorlabs.com/item/DET36A) | Si biased detector, 350–1100 nm; detects the excitation light reflected by the reflective ND filter |
 | SPCM (Single-Photon Counting Module) | [Excelitas SPCM-AQRH-15-FC](https://www.digikey.com/en/products/detail/excelitas-technologies/SPCM-AQRH-15-FC/6235282) | Confocal detection |
 | SPAD camera | <a href="../_static/hardware/SPC3_user_manual_2.2.0B.pdf" target="_blank" rel="noopener">Micro Photon Devices SPC3</a> | Widefield detection, 64x32 pixel array |
 
@@ -102,16 +104,17 @@ exact procedure). The mirror pair closest to the fiber is fixed once both lasers
 ## Objective & Sample Interface
 
 For confocal imaging, the excitation light out of the fiber is collimated and magnified before the objective using two lenses as a telescope. Since we use the high power Sprout laser for both confocal and widefield measurements, there is an ND filter located on a flip mount (not shown in the schematic) to attenuate the power accordingly. The focal lengths of the lenses for the telescope are chosen to magnify the beam to match the back aperture of the objective, $D$. We use a Nikon CFI
-Plan Fluor 100X Oil, 1.3 NA objective, with effective focal length
+Plan Fluor 100X Oil, 1.3 NA objective. Its effective focal length is set by the magnification
+$M = 100$ and the focal length of the Nikon tube lens it is designed for, $f_\text{tube} = 200$ mm:
 
 $$
-f_\text{obj} = \frac{200~\text{mm}}{100} = 2~\text{mm}.
+f_\text{obj} = \frac{f_\text{tube}}{M} = \frac{200~\text{mm}}{100} = 2~\text{mm}.
 $$
 
 From geometric optics, the objective aperture is $D = 2\times\text{NA}\times f_\text{obj} \approx
 5.2$ mm. The green light enters the science box and is reflected off the dichroic mirror and sent through the objective ({numref}`Figure %s <fig-objective-schematic>`). 
 The diamond sample is mounted on a cover glass patterned with a microwave stripline (also referred to as a coplanar
-waveguide or CPW). Immersion oil is placed between the objective's front lens and the cover glass. The
+waveguide or CPW; see {ref}`Coplanar Waveguide & PCB <cpw-design>`). Immersion oil is placed between the objective's front lens and the cover glass. The
 objective's working distance (WD) is 0.16 mm for a 0.17 mm cover glass, so the cover glass surface
 closest to the objective sits 0.16 mm away when the objective is focused at the diamond surface
 (the CPW itself is only $\sim 500$ nm thick, negligible on this scale).
@@ -209,7 +212,7 @@ only a single 5$\times$5 NV array (spanning 9$\times$9 pixels) is illuminated at
 To illuminate the full array, collimated light is focused at the objective's back aperture using a
 flip-mounted lens (allowing the setup to switch between confocal and widefield modes). This lens
 has a 1 m focal length. Combined with the objective as a telescope, it is designed to produce a collimated beam
-at the sample plane with a 10 $\mu$m diameter which is large enough to illuminate the array (we measure a diameter of 6 $\mu$m in the {doc}`alignment <../calibration/optics_alignment>` section).
+at the sample plane with a 10 $\mu$m diameter. This diameter is larger than the span of the array but chosen so the illuminated area over the array has a more uniform power distribution (with a tradeoff of having to use more total laser power to match the optimal intensity per NV). We find after alignment that the beam diameter is approximately 7.5 $\mu$m (see the {doc}`alignment <../calibration/optics_alignment>` section).
 
 ```{figure} ../_static/images/SPAD_array.png
 :name: fig-spad-array
