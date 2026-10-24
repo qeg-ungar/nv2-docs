@@ -180,11 +180,15 @@ The configuration is a Python dictionary (`config` in `NV2/configuration.py`) th
 physical OPX+ ports to the logical objects the program uses[^QMconfig]:
 
 - **Controllers** list the OPX+ ports in use, with their DC offsets and delays.
-- **Elements** are the components the program addresses: each has its input ports, an intermediate
-  frequency (IF), and a set of named **operations**.
-- **Operations** point to **pulses**, which have a length and **waveforms** (one for a single
-  input, I and Q for an IQ input). Measurement pulses also define how the returning signal is
-  acquired. The **mixer** entry holds the IQ correction matrix from the
+- **Elements** are the components the program addresses. Each is assigned the OPX+ outputs that
+  drive it (a single analog output, an I/Q pair of analog outputs, or a digital output), and a
+  readout element is also assigned the OPX+ analog input it is read on. Each element also has an
+  intermediate frequency (IF) and a set of named **operations**. The configuration keys are named
+  from the element's point of view, so `singleInput`, `mixInputs`, and `digitalInputs` refer to
+  OPX+ outputs, and an element's `outputs` refers to an OPX+ input.
+- **Operations** point to **pulses**, which have a length and **waveforms**: one for an element on
+  a single analog output, I and Q for an element on an I/Q pair. Measurement pulses also define how
+  the signal on the OPX+ input is acquired. The **mixer** entry holds the IQ correction matrix from the
   {doc}`IQ calibration <../calibration/iq_calibration>`.
 
 The NV2 elements map onto the {doc}`microwave and RF chain <rf_electronics>` as follows:
