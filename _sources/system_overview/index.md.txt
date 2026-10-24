@@ -30,7 +30,7 @@ The typical experiment workflow consists of first performing a fluorescence scan
 | {doc}`Optics & Imaging <optics>` | Excitation and detection beam paths, confocal and widefield imaging, detectors|
 | {doc}`Microwave & RF Electronics <rf_electronics>` | QM OPX+, IQ modulation, MW/RF amplifier chains, stripline connections |
 | {doc}`Diamond Sample <diamond_sample>` | Sample holder, PCB antenna, and thermal assembly |
-| {doc}`Software Organization <software>` | Control software architecture and data flow |
+| {doc}`Software Organization <software>` | Qudi and QUA control software, workspace setup, and version control |
 | {doc}`PID Heater <pid_heater>` | Arduino-based PID temperature stabilization of the science box |
 
 ```{toctree}

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="PID Heater" href="pid_heater.html"><link rel="prev" title="Diamond Sample &amp; PCB" href="diamond_sample.html">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
         <title>Software Organization - NV2 Lab Manual</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -265,79 +265,746 @@
         <article role="main" id="furo-main-content">
           <section class="tex2jax_ignore mathjax_ignore" id="software-organization">
 <h1>Software Organization<a class="headerlink" href="#software-organization" title="Link to this heading">¶</a></h1>
-<p>This page describes the software stack used to control the NV2 instrument, acquire data, and run experiments.</p>
+<p>This page describes the software that controls the NV2 setup: the two Python packages that run the
+instruments (Qudi and QUA), how they are organized in a single workspace, how to set that workspace
+up on a new computer, and how the code is kept under version control.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="_static/images/software_architecture.png"><img alt="Software architecture diagram" src="_static/images/software_architecture.png" style="width: 85%;" />
-</a>
-<figcaption>
-<p><span class="caption-number">Figure 9 </span><span class="caption-text">High-level software architecture and data flow.
-<em>(Figure placeholder — add diagram.)</em></span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="repositories-packages">
-<h2>Repositories &amp; Packages<a class="headerlink" href="#repositories-packages" title="Link to this heading">¶</a></h2>
+<p>The setup is controlled by two open-source Python packages, which divide the hardware in the
+<a class="reference internal" href="index.html"><span class="doc">system block diagram</span></a> between them:</p>
+<ul class="simple">
+<li><p><strong>Qudi</strong><a class="footnote-reference brackets" href="#binder2017" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> runs the “slow” instruments and the imaging. It handles confocal scanning
+of the piezo stage with photon counting on the NI DAQ card, acquisition on the two widefield
+cameras (the SPC3 SPAD camera and the Hermes camera), wide-range CW ODMR scans, monitoring of the photodetector and SPCM signals, and control of the alignment
+laser and the digital switches.</p></li>
+<li><p><strong>QUA</strong><a class="footnote-reference brackets" href="#qmdocs" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>, the pulse-level language of Quantum Machines, programs the <strong>QM OPX+</strong> for
+pulsed experiments. The OPX+ acts as the arbitrary waveform generator (IQ waveforms for the MW
+chains, RF pulses, and TTL gating of the lasers) and counts photons by time-tagging the SPCM
+pulses on its analog input, all synchronized within one pulse sequence. The QUA scripts also set
+the SRS SG384 local oscillators before each run.</p></li>
+</ul>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Repository</p></th>
-<th class="head"><p>Language</p></th>
+<tr class="row-odd"><th class="head"><p>Hardware (block diagram)</p></th>
+<th class="head"><p>Controlled by</p></th>
+<th class="head"><p>Module / element</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>QM OPX+</p></td>
+<td><p>QUA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">QuantumMachinesManager</span></code>; elements <code class="docutils literal notranslate"><span class="pre">NV</span></code>, <code class="docutils literal notranslate"><span class="pre">RF</span></code>, <code class="docutils literal notranslate"><span class="pre">AOM2</span></code>, <code class="docutils literal notranslate"><span class="pre">MW_switch</span></code>, <code class="docutils literal notranslate"><span class="pre">SPCM2</span></code></p></td>
+<td><p>Pulse sequencing and photon time-tagging</p></td>
+</tr>
+<tr class="row-odd"><td><p>Signal generators (SRS SG384)</p></td>
+<td><p>QUA, Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SG384.py</span></code> (QUA scripts); <code class="docutils literal notranslate"><span class="pre">mw_source_srssg</span></code> (Qudi CW ODMR)</p></td>
+<td><p>Set over Ethernet (SCPI)</p></td>
+</tr>
+<tr class="row-even"><td><p>NI DAQ card</p></td>
+<td><p>Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_finite_sampling_io</span></code>, <code class="docutils literal notranslate"><span class="pre">ni_ao</span></code>, <code class="docutils literal notranslate"><span class="pre">ni_instreamer</span></code>, <code class="docutils literal notranslate"><span class="pre">ni_finite_sampling_input</span></code></p></td>
+<td><p>Piezo voltages, photon counting, analog input</p></td>
+</tr>
+<tr class="row-odd"><td><p>XYZ piezo</p></td>
+<td><p>Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_scanner</span></code> (NI analog outputs <code class="docutils literal notranslate"><span class="pre">ao0</span></code>–<code class="docutils literal notranslate"><span class="pre">ao2</span></code>)</p></td>
+<td><p>Confocal scanning and tracking</p></td>
+</tr>
+<tr class="row-even"><td><p>SPCM</p></td>
+<td><p>Qudi, QUA</p></td>
+<td><p>NI counter input <code class="docutils literal notranslate"><span class="pre">PFI15</span></code> (Qudi); OPX+ analog input (QUA)</p></td>
+<td><p>Counts for scans and ODMR; time tags for pulsed readout</p></td>
+</tr>
+<tr class="row-odd"><td><p>Photodetector</p></td>
+<td><p>Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_instreamer</span></code> (NI analog input <code class="docutils literal notranslate"><span class="pre">ai0</span></code>)</p></td>
+<td><p>Laser power monitoring</p></td>
+</tr>
+<tr class="row-even"><td><p>Cameras (SPC3 SPAD, Hermes)</p></td>
+<td><p>Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">camera_SPC3</span></code>, <code class="docutils literal notranslate"><span class="pre">camera_Hermes</span></code></p></td>
+<td><p>Widefield acquisition</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alignment laser (DLnsec)</p></td>
+<td><p>Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dlnsec_laser</span></code></p></td>
+<td><p>Power and mode over USB serial</p></td>
+</tr>
+<tr class="row-even"><td><p>Experiment laser AOM</p></td>
+<td><p>QUA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AOM2</span></code> digital marker</p></td>
+<td><p>TTL gating within pulse sequences</p></td>
+</tr>
+<tr class="row-odd"><td><p>MW switch</p></td>
+<td><p>QUA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">MW_switch</span></code> digital marker</p></td>
+<td><p>MW gating within pulse sequences</p></td>
+</tr>
+<tr class="row-even"><td><p>Magnet stage</p></td>
+<td><p>Qudi</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">zaber_motor</span></code></p></td>
+<td><p>Magnet positioning</p></td>
+</tr>
+<tr class="row-odd"><td><p>Heater PID</p></td>
+<td><p>Separate controller</p></td>
+<td><p>—</p></td>
+<td><p>See <a class="reference internal" href="pid_heater.html"><span class="doc">PID Heater</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Qudi can also run long experiments automatically. A script executed through Qudi’s Jupyter kernel
+periodically re-tracks the NV emitter (the scanning optimizer re-centers the piezo on the
+fluorescence spot) and then sends a trigger to the OPX+ through an NI digital line (the
+<code class="docutils literal notranslate"><span class="pre">AWG</span> <span class="pre">trigger</span></code> switch), so the OPX+ resumes the pulse sequence and data collection with the NV back
+in focus. This lets an experiment average for hours while staying on the same emitter (see
+<a class="reference internal" href="../experiments/automation.html"><span class="doc">Automation</span></a>).</p>
+<section id="environment-and-workflow">
+<h3>Environment and workflow<a class="headerlink" href="#environment-and-workflow" title="Link to this heading">¶</a></h3>
+<p>All of the control code lives in one workspace folder, opened as a single VS Code workspace and run
+from a single Python virtual environment:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">qudi-iqo-modules/</span></code></strong>: our fork of the Qudi measurement modules, installed in editable mode so
+lab changes (e.g. the DLnsec laser driver) take effect without reinstalling.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">qua-libs/</span></code></strong>: our fork of the Quantum Machines example library; the NV2 scripts are in
+<code class="docutils literal notranslate"><span class="pre">Quantum-Control-Applications/Optically</span> <span class="pre">addressable</span> <span class="pre">spin</span> <span class="pre">qubits/NV2/</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">qudi-configs/</span></code></strong>: the Qudi configuration files for NV2.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">notebooks/</span></code></strong>: Jupyter notebooks that script Qudi through its kernel.</p></li>
+</ul>
+<p>A typical session starts Qudi with the NV2 configuration, uses the confocal scanner to find the NV
+or array of interest and optimize its position, and then runs QUA scripts from VS Code for
+calibrations and pulsed experiments. Qudi saves its data to the data directory set in its
+configuration, with daily subfolders, and the QUA scripts save to a <code class="docutils literal notranslate"><span class="pre">Data</span></code> folder next to the NV2
+script folder.</p>
+</section>
+</section>
+<section id="qudi">
+<h2>Qudi<a class="headerlink" href="#qudi" title="Link to this heading">¶</a></h2>
+<p>Qudi is a modular Python suite for experiment control and data processing, developed at the
+Institute for Quantum Optics in Ulm<a class="footnote-reference brackets" href="#binder2017" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. It is split into two packages:</p>
+<ul class="simple">
+<li><p><strong><a class="reference external" href="https://github.com/Ulm-IQO/qudi-core">qudi-core</a></strong> is the framework: the module manager, the
+configuration system, the GUI manager, data storage, and the IPython kernel used by notebooks
+(<a class="reference external" href="https://ulm-iqo.github.io/qudi-core/">documentation</a>).</p></li>
+<li><p><strong><a class="reference external" href="https://github.com/Ulm-IQO/qudi-iqo-modules">qudi-iqo-modules</a></strong> provides the measurement
+modules: confocal scanning, time series, CW ODMR, camera, laser, switches, and others. Its
+<code class="docutils literal notranslate"><span class="pre">docs/</span></code> folder has setup guides for the main toolchains.</p></li>
+</ul>
+<section id="hardware-logic-and-gui-modules">
+<h3>Hardware, logic, and GUI modules<a class="headerlink" href="#hardware-logic-and-gui-modules" title="Link to this heading">¶</a></h3>
+<p>Every Qudi measurement module is one of three types, arranged in a one-way hierarchy<a class="footnote-reference brackets" href="#qudimodules" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>:</p>
+<ul class="simple">
+<li><p><strong>Hardware modules</strong> wrap a single instrument behind an abstract interface (e.g. a microwave
+source, a finite-sampling input, a camera). They do not control other modules. Because logic
+only talks to the interface, a real instrument can be swapped for another model or a dummy
+without changing the logic.</p></li>
+<li><p><strong>Logic modules</strong> are the core of a measurement: they run it, process and save the data, and
+coordinate one or more hardware (or other logic) modules. Each runs in its own thread, and its
+methods form the API that notebooks and scripts call.</p></li>
+<li><p><strong>GUI modules</strong> are Qt windows built on top of logic modules. They contain no measurement logic of
+their own.</p></li>
+</ul>
+<p>Modules declare their dependencies with <em>connectors</em>, their static settings with <em>config options</em>,
+and any state to remember between sessions with <em>status variables</em>. The module manager loads and
+activates modules (and everything they depend on) on request.</p>
+</section>
+<section id="configuration-file">
+<h3>Configuration file<a class="headerlink" href="#configuration-file" title="Link to this heading">¶</a></h3>
+<p>A Qudi session is built from a configuration file: a YAML text file with a <code class="docutils literal notranslate"><span class="pre">.cfg</span></code> extension, read
+once at startup<a class="footnote-reference brackets" href="#qudiconfig" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>. It has a <code class="docutils literal notranslate"><span class="pre">global</span></code> section (data directory, startup modules, server
+ports, GUI stylesheet) followed by <code class="docutils literal notranslate"><span class="pre">gui</span></code>, <code class="docutils literal notranslate"><span class="pre">logic</span></code>, and <code class="docutils literal notranslate"><span class="pre">hardware</span></code> sections. Each module entry gives
+a unique name, the module class (<code class="docutils literal notranslate"><span class="pre">module.Class</span></code>), its <code class="docutils literal notranslate"><span class="pre">options</span></code>, and a <code class="docutils literal notranslate"><span class="pre">connect</span></code> block that wires
+its connectors to other modules by name. For example, the confocal scanning toolchain in the NV2
+configuration (trimmed):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">gui</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">scanner_gui</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">module.Class</span><span class="p">:</span><span class="w"> </span><span class="s">'scanning.scannergui.ScannerGui'</span>
+<span class="w">        </span><span class="nt">connect</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">scanning_logic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scanning_probe_logic</span>
+<span class="w">            </span><span class="nt">data_logic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scanning_data_logic</span>
+<span class="w">            </span><span class="nt">optimize_logic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scanning_optimize_logic</span>
+
+<span class="nt">logic</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">scanning_probe_logic</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">module.Class</span><span class="p">:</span><span class="w"> </span><span class="s">'scanning_probe_logic.ScanningProbeLogic'</span>
+<span class="w">        </span><span class="nt">connect</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">scanner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ni_scanner</span>
+
+<span class="nt">hardware</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ni_scanner</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">module.Class</span><span class="p">:</span><span class="w"> </span><span class="s">'interfuse.ni_scanning_probe_interfuse.NiScanningProbeInterfuse'</span>
+<span class="w">        </span><span class="nt">connect</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">scan_hardware</span><span class="p">:</span><span class="w"> </span><span class="s">'ni_finite_sampling_io'</span>
+<span class="w">            </span><span class="nt">analog_output</span><span class="p">:</span><span class="w"> </span><span class="s">'ni_ao'</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">ni_channel_mapping</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">x</span><span class="p">:</span><span class="w"> </span><span class="s">'ao0'</span>
+<span class="w">                </span><span class="nt">y</span><span class="p">:</span><span class="w"> </span><span class="s">'ao1'</span>
+<span class="w">                </span><span class="nt">z</span><span class="p">:</span><span class="w"> </span><span class="s">'ao2'</span>
+<span class="w">                </span><span class="nt">APD1</span><span class="p">:</span><span class="w"> </span><span class="s">'PFI15'</span>
+</pre></div>
+</div>
+<p>Opening <code class="docutils literal notranslate"><span class="pre">scanner_gui</span></code> in the Qudi manager loads the whole chain down to the NI card. The NV2
+configuration (<code class="docutils literal notranslate"><span class="pre">qudi-configs/SPUD202609.cfg</span></code>) defines these toolchains:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Toolchain</p></th>
+<th class="head"><p>GUI</p></th>
+<th class="head"><p>Logic</p></th>
+<th class="head"><p>Hardware</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Confocal scanning</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scanner_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scanning_probe_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">scanning_data_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">scanning_optimize_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">poi_manager_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_scanner</span></code> → <code class="docutils literal notranslate"><span class="pre">ni_finite_sampling_io</span></code>, <code class="docutils literal notranslate"><span class="pre">ni_ao</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>SPC3 camera and scanning</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SPC3_gui</span></code>, <code class="docutils literal notranslate"><span class="pre">scanner_spad_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">camera_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">spad_probe_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">spad_optimize_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_scanner</span></code>, <code class="docutils literal notranslate"><span class="pre">camera_SPC3</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Hermes camera and scanning</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hermes_gui</span></code>, <code class="docutils literal notranslate"><span class="pre">scanner_hermes_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">camera_hermes_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">hermes_probe_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">hermes_optimize_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_scanner</span></code>, <code class="docutils literal notranslate"><span class="pre">camera_Hermes</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>CW ODMR</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">odmr_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">odmr_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mw_source_srssg</span></code>, <code class="docutils literal notranslate"><span class="pre">ni_finite_sampling_input</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Time series (SPCM and photodetector)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">APD_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">time_series_reader_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ni_instreamer</span></code> (<code class="docutils literal notranslate"><span class="pre">PFI15</span></code> counts, <code class="docutils literal notranslate"><span class="pre">ai0</span></code> photodetector)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alignment laser</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">laser_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">laser_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dlnsec_laser</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Switches</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">laser_switch_gui</span></code>, <code class="docutils literal notranslate"><span class="pre">qm_switch_gui</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">laser_switch_logic</span></code>, <code class="docutils literal notranslate"><span class="pre">qm_switch_logic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">laser_switch_ni</span></code> (laser mode relay), <code class="docutils literal notranslate"><span class="pre">qm_switch_ni</span></code> (OPX+ trigger)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Magnet</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">zaber_motor</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The Hermes camera modules and the Zaber magnet-stage driver are not yet in the workspace
+repository; the other toolchains run without them.</p>
+</section>
+<section id="notebooks-and-scripting">
+<h3>Notebooks and scripting<a class="headerlink" href="#notebooks-and-scripting" title="Link to this heading">¶</a></h3>
+<p>Qudi serves its active modules to a Jupyter kernel, so experiments can be scripted in a notebook
+using the same logic modules the GUIs use<a class="footnote-reference brackets" href="#qudijupyter" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>. The <code class="docutils literal notranslate"><span class="pre">qudi</span></code> kernel does not start Qudi
+itself; it connects to a running Qudi instance through the local namespace server
+(<code class="docutils literal notranslate"><span class="pre">namespace_server_port</span></code> in the configuration, 18861 by default) and exposes each active module by
+its configured name. For example, with the <code class="docutils literal notranslate"><span class="pre">dlnsec_laser</span></code> module active:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">laser_control</span> <span class="o">=</span> <span class="n">dlnsec_laser</span>
+<span class="n">laser_control</span><span class="o">.</span><span class="n">set_power</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># mW</span>
+<span class="n">laser_control</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To run a notebook, start Qudi and load the NV2 configuration, activate the modules the notebook
+uses in the Qudi manager, then open the notebook in VS Code and select the <strong>qudi</strong> kernel. The
+workspace’s <code class="docutils literal notranslate"><span class="pre">QUDI_MIGRATION.md</span></code> covers re-registering the kernel and fixing a stale kernel path in
+VS Code.</p>
+</section>
+</section>
+<section id="qua">
+<h2>QUA<a class="headerlink" href="#qua" title="Link to this heading">¶</a></h2>
+<p>QUA is a Python-embedded language for pulse-level control<a class="footnote-reference brackets" href="#qmdocs" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. A QUA program describes which
+pulses to play on which outputs, which signals to measure, the real-time variables and loops that
+sweep parameters, and how results are processed. It is sent to the OPX+, which compiles it and
+executes it in real time on its pulse processor, with deterministic timing in 4 ns clock cycles. Each NV2
+script follows the same pattern: import the configuration, write the program inside a
+<code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">program()</span></code> block, connect to the OPX+ with a <code class="docutils literal notranslate"><span class="pre">QuantumMachinesManager</span></code>, and either simulate
+the program or open a quantum machine with the configuration and execute it, fetching and plotting
+the results live.</p>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h3>
+<p>The configuration is a Python dictionary (<code class="docutils literal notranslate"><span class="pre">config</span></code> in <code class="docutils literal notranslate"><span class="pre">NV2/configuration.py</span></code>) that maps the
+physical OPX+ ports to the logical objects the program uses<a class="footnote-reference brackets" href="#qmconfig" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>:</p>
+<ul class="simple">
+<li><p><strong>Controllers</strong> list the OPX+ ports in use, with their DC offsets and delays.</p></li>
+<li><p><strong>Elements</strong> are the components the program addresses: each has its input ports, an intermediate
+frequency (IF), and a set of named <strong>operations</strong>.</p></li>
+<li><p><strong>Operations</strong> point to <strong>pulses</strong>, which have a length and <strong>waveforms</strong> (one for a single
+input, I and Q for an IQ input). Measurement pulses also define how the returning signal is
+acquired. The <strong>mixer</strong> entry holds the IQ correction matrix from the
+<a class="reference internal" href="../calibration/iq_calibration.html"><span class="doc">IQ calibration</span></a>.</p></li>
+</ul>
+<p>The NV2 elements map onto the <a class="reference internal" href="rf_electronics.html"><span class="doc">microwave and RF chain</span></a> as follows:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>OPX+ ports</p></th>
+<th class="head"><p>Operations</p></th>
 <th class="head"><p>Role</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NV</span></code></p></td>
+<td><p>Analog outputs 1, 2 (I, Q)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cw</span></code>, <code class="docutils literal notranslate"><span class="pre">x180</span></code>, <code class="docutils literal notranslate"><span class="pre">x90</span></code>, <code class="docutils literal notranslate"><span class="pre">-x90</span></code>, <code class="docutils literal notranslate"><span class="pre">y180</span></code>, <code class="docutils literal notranslate"><span class="pre">y90</span></code>, <code class="docutils literal notranslate"><span class="pre">-y90</span></code></p></td>
+<td><p>IQ drive of the NV through the SG384; the LO frequency is the SG384 carrier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RF</span></code></p></td>
+<td><p>Analog output 3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">const</span></code></p></td>
+<td><p>Nuclear-spin RF pulses</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AOM2</span></code></p></td>
+<td><p>Digital output 2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">laser_ON</span></code></p></td>
+<td><p>TTL gating of the experiment laser AOM</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MW_switch</span></code></p></td>
+<td><p>Digital output 1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mw_switch_ON</span></code></p></td>
+<td><p>MW switch gating</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SPCM2</span></code></p></td>
+<td><p>Analog input 1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">readout</span></code>, <code class="docutils literal notranslate"><span class="pre">long_readout</span></code></p></td>
+<td><p>Photon time-tagging, with the readout calibrated for <code class="docutils literal notranslate"><span class="pre">AOM2</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">MW_switch</span></code> replaced the former <code class="docutils literal notranslate"><span class="pre">AOM1</span></code> laser element on digital output 1. <code class="docutils literal notranslate"><span class="pre">AOM1</span></code> and its readout
+partner <code class="docutils literal notranslate"><span class="pre">SPCM1</span></code> are still defined in <code class="docutils literal notranslate"><span class="pre">configuration.py</span></code>, but <code class="docutils literal notranslate"><span class="pre">AOM1</span></code> now drives the MW switch output,
+so NV2 sequences use <code class="docutils literal notranslate"><span class="pre">AOM2</span></code> and <code class="docutils literal notranslate"><span class="pre">SPCM2</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">configuration.py</span></code> also connects to the SG384 through <code class="docutils literal notranslate"><span class="pre">SG384.py</span></code> (a small PyVISA driver) and sets
+its frequency, amplitude, and IQ modulation when the configuration is imported. Running any NV2
+script therefore reconfigures the SG384 to the values in <code class="docutils literal notranslate"><span class="pre">configuration.py</span></code>.</p>
+</section>
+<section id="writing-programs">
+<h3>Writing programs<a class="headerlink" href="#writing-programs" title="Link to this heading">¶</a></h3>
+<p>The main QUA statements used in the NV2 scripts are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">play(operation,</span> <span class="pre">element)</span></code> plays a pulse on an element, modulated at the element’s IF;
+<code class="docutils literal notranslate"><span class="pre">amp(...)</span></code> scales its amplitude and <code class="docutils literal notranslate"><span class="pre">duration=</span></code> sets its length in real time (in 4 ns clock
+cycles).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">measure(operation,</span> <span class="pre">element,</span> <span class="pre">...)</span></code> plays a readout and acquires the returning signal; for the
+SPCM, <code class="docutils literal notranslate"><span class="pre">time_tagging.analog(...)</span></code> records the arrival time of each photon pulse and returns the
+count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">align()</span></code> makes elements wait for each other before continuing (with no arguments, all
+elements), and <code class="docutils literal notranslate"><span class="pre">wait()</span></code> inserts a delay, so the MW, laser, and readout happen in the right
+order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">declare()</span></code> creates real-time variables, and <code class="docutils literal notranslate"><span class="pre">for_</span></code> loops sweep them on the OPX+ (with
+<code class="docutils literal notranslate"><span class="pre">from_array</span></code> from qualang-tools to loop over a NumPy array).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save()</span></code> sends values to streams, and the <code class="docutils literal notranslate"><span class="pre">stream_processing()</span></code> block buffers and averages them
+on the OPX+ before they are fetched.</p></li>
+</ul>
+<p>For example, the core of the time-Rabi script, shown here with the NV2 elements, sweeps the MW
+pulse duration <code class="docutils literal notranslate"><span class="pre">t</span></code> and reads out the fluorescence after each pulse:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">for_</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">n_avg</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">for_</span><span class="p">(</span><span class="o">*</span><span class="n">from_array</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t_vec</span><span class="p">)):</span>
+        <span class="n">play</span><span class="p">(</span><span class="s2">"x180"</span> <span class="o">*</span> <span class="n">amp</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">"NV"</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># MW pulse of variable length</span>
+        <span class="n">align</span><span class="p">()</span>                                  <span class="c1"># laser readout after the MW pulse</span>
+        <span class="n">play</span><span class="p">(</span><span class="s2">"laser_ON"</span><span class="p">,</span> <span class="s2">"AOM2"</span><span class="p">)</span>
+        <span class="n">measure</span><span class="p">(</span><span class="s2">"readout"</span><span class="p">,</span> <span class="s2">"SPCM2"</span><span class="p">,</span> <span class="n">time_tagging</span><span class="o">.</span><span class="n">analog</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">meas_len_2</span><span class="p">,</span> <span class="n">counts</span><span class="p">))</span>
+        <span class="n">save</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">counts_st</span><span class="p">)</span>
+        <span class="n">wait</span><span class="p">(</span><span class="n">wait_between_runs</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">ns</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The unmodified default scripts address <code class="docutils literal notranslate"><span class="pre">AOM1</span></code> and <code class="docutils literal notranslate"><span class="pre">SPCM1</span></code>. On NV2, switch them to <code class="docutils literal notranslate"><span class="pre">AOM2</span></code> and
+<code class="docutils literal notranslate"><span class="pre">SPCM2</span></code>, as in the modified <code class="docutils literal notranslate"><span class="pre">05a_cw_odmr.py</span></code>.</p>
+</section>
+<section id="default-nv-scripts">
+<h3>Default NV scripts<a class="headerlink" href="#default-nv-scripts" title="Link to this heading">¶</a></h3>
+<p>The NV2 scripts are adapted from the example folder for an NV center in a confocal setup that ships
+with qua-libs (<code class="docutils literal notranslate"><span class="pre">Optically</span> <span class="pre">addressable</span> <span class="pre">spin</span> <span class="pre">qubits/NV</span> <span class="pre">center</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">confocal</span> <span class="pre">setup/</span></code>). The table lists
+the default scripts and marks the ones modified for NV2:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>Script</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Modified for NV2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>00</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">00_hello_qua.py</span></code></p></td>
+<td><p>Minimal program for trying out QUA</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>01</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">01_manual_mixer_calibration.py</span></code></p></td>
+<td><p>Manual correction of the IQ mixer imbalance</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>02</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">02_raw_adc_traces.py</span></code></p></td>
+<td><p>Raw ADC traces of the SPCM signal, to check saturation and set the time-tagging threshold</p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>03</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">03_counter.py</span></code></p></td>
+<td><p>Live photon counter</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>04a</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">04a_calibrate_delays.py</span></code></p></td>
+<td><p>MW pulse during a laser pulse with time-tagging, to measure system delays and the initialization time</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>04b</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">04b_calibrate_delays_python_histogram.py</span></code></p></td>
+<td><p>Same as 04a with the histogram built in Python, for high count rates</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>05a</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">05a_cw_odmr.py</span></code></p></td>
+<td><p>CW ODMR: MW and laser readout played together during a frequency sweep</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>05b</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">05b_pulsed_odmr.py</span></code></p></td>
+<td><p>Pulsed ODMR: MW pulse followed by laser readout</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>06</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">06_time_rabi.py</span></code></p></td>
+<td><p>Rabi oscillation vs. MW pulse duration</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>07</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">07_power_rabi.py</span></code></p></td>
+<td><p>Rabi oscillation vs. MW pulse amplitude</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>08</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">08_ramsey.py</span></code></p></td>
+<td><p>Ramsey measurement of <span class="math notranslate nohighlight">\(T_2^*\)</span></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>09a</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">09a_hahn_echo.py</span></code></p></td>
+<td><p>Hahn echo measurement of <span class="math notranslate nohighlight">\(T_2\)</span></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>09b</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">09b_xy8_tau.py</span></code></p></td>
+<td><p>XY8-N dynamical decoupling, sweeping the interpulse spacing</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>09c</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">09c_xy8_order.py</span></code></p></td>
+<td><p>XY8 dynamical decoupling, sweeping the order N</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">10_T1.py</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(T_1\)</span> relaxation from <span class="math notranslate nohighlight">\(\lvert 0 \rangle\)</span> or <span class="math notranslate nohighlight">\(\lvert 1 \rangle\)</span></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">11_state_tomography.py</span></code></p></td>
+<td><p>Qubit state tomography from the three projections</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">12_randomized_benchmarking.py</span></code></p></td>
+<td><p>Single-qubit randomized benchmarking of the gate fidelity</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-</section>
-<section id="control-software">
-<h2>Control Software<a class="headerlink" href="#control-software" title="Link to this heading">¶</a></h2>
-<p><em>Describe the main control interface: GUI or script-based, how experiments are configured and launched.</em></p>
-<section id="qua-programs-qm-opx">
-<h3>QUA Programs (QM OPX)<a class="headerlink" href="#qua-programs-qm-opx" title="Link to this heading">¶</a></h3>
-<p>Quantum Orchestration programs written in QUA define pulse sequences, timing, and real-time
-processing on the OPX. <em>Add: directory location, how to run a sequence, configuration files.</em></p>
-</section>
-<section id="ni-i-o-control">
-<h3>NI I/O Control<a class="headerlink" href="#ni-i-o-control" title="Link to this heading">¶</a></h3>
-<p><em>Describe the Python/LabVIEW layer that interfaces with the NI card for piezo scanning, analog readout, etc.</em></p>
-</section>
-<section id="piezo-scanner">
-<h3>Piezo Scanner<a class="headerlink" href="#piezo-scanner" title="Link to this heading">¶</a></h3>
-<p><em>Describe the scanning control: how raster scan parameters are set (range, step size, dwell time),
-how data is acquired and saved.</em></p>
+<p>The folder also contains:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">configuration.py</span></code>: the NV2 configuration described above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SG384.py</span></code>: the PyVISA driver for the SG384. This is a lab addition.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">05a_cw_odmr_default.py</span></code>: the unmodified upstream CW ODMR script, kept for reference.</p></li>
+<li><p>The upstream <code class="docutils literal notranslate"><span class="pre">configuration_with_*.py</span></code> variants for Octave and FEM-based hardware, which NV2 does
+not use.</p></li>
+</ul>
 </section>
 </section>
-<section id="data-storage">
-<h2>Data Storage<a class="headerlink" href="#data-storage" title="Link to this heading">¶</a></h2>
-<p><em>Describe where data is saved: directory structure, file formats (HDF5, NPY, CSV), naming conventions.</em></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>data/
-├── YYYY-MM-DD/
-│   ├── confocal_scan_001.hdf5
-│   ├── odmr_sweep_001.hdf5
-│   └── ...
+<section id="setting-up-the-workspace">
+<h2>Setting Up the Workspace<a class="headerlink" href="#setting-up-the-workspace" title="Link to this heading">¶</a></h2>
+<p>A clean copy of the NV2 workspace is maintained as a reference repository,
+<a class="reference external" href="https://github.com/qeg-ungar/nv2-workspace">qeg-ungar/nv2-workspace</a>. It holds the two forks as git
+submodules, plus the files needed to get started: the Qudi configurations, the QUA configuration,
+and the SG384 driver. It is a copy of the workspace on the lab computer, updated whenever that
+workspace is in a known-good state. The layout is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nv2-workspace/
+├── .venv/                        Python virtual environment (not tracked)
+├── qudi-iqo-modules/             submodule: fork of Ulm-IQO/qudi-iqo-modules (editable install)
+├── qua-libs/                     submodule: fork of qua-platform/qua-libs
+│   └── Quantum-Control-Applications/Optically addressable spin qubits/NV2/
+├── qudi-configs/                 default.cfg and the NV2 configuration
+├── python notebooks/             notebooks run on the qudi kernel
+├── QUDI_MIGRATION.md             environment notes and troubleshooting
+└── workspace_sam.code-workspace  VS Code workspace
+</pre></div>
+</div>
+<p>The commands below are for the Windows lab computer, run from the workspace folder in a VS Code
+terminal.</p>
+<ol class="arabic">
+<li><p><strong>Get the code.</strong> Clone the workspace with both submodules (see
+<a class="reference internal" href="#software-version-control"><span class="std std-ref">Version Control</span></a>):</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="p">-</span><span class="n">-recurse-submodules</span> <span class="n">https</span><span class="p">://</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">qeg-ungar</span><span class="p">/</span><span class="n">nv2-workspace</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>To build it from scratch instead, fork <a class="reference external" href="https://github.com/Ulm-IQO/qudi-iqo-modules">qudi-iqo-modules</a>
+and <a class="reference external" href="https://github.com/qua-platform/qua-libs">qua-libs</a> on GitHub and clone both forks into one
+folder.</p>
+</li>
+<li><p><strong>Create the Python environment.</strong> Create a virtual environment with Python 3.11 in the
+workspace folder, select it as the interpreter in VS Code (<strong>Python: Select Interpreter</strong>), and
+save the workspace (<strong>File → Save Workspace As</strong>):</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">py</span> <span class="p">-</span><span class="n">3</span><span class="p">.</span><span class="n">11</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Install the QUA packages.</strong> Install the qua-libs requirements (including <code class="docutils literal notranslate"><span class="pre">qm-qua</span></code>,
+<code class="docutils literal notranslate"><span class="pre">qualang-tools</span></code>, and PyVISA):</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">qua-libs</span><span class="p">\</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>The NV2 folder must contain <code class="docutils literal notranslate"><span class="pre">configuration.py</span></code> and <code class="docutils literal notranslate"><span class="pre">SG384.py</span></code>. They are already in the
+reference workspace; in a fresh fork, copy them into the NV directory. The OPX+ and SG384
+network addresses are set in <code class="docutils literal notranslate"><span class="pre">configuration.py</span></code>.</p>
+</li>
+<li><p><strong>Install Qudi.</strong> Install qudi-core from PyPI (not from source), then install qudi-iqo-modules
+from the cloned fork in editable mode, following the qudi-iqo-modules
+<a class="reference external" href="https://github.com/Ulm-IQO/qudi-iqo-modules/blob/main/docs/installation_guide.md">installation guide</a>:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">qudi-core</span>
+</pre></div>
+</div>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-e</span> <span class="n">qudi-iqo-modules</span>
+</pre></div>
+</div>
+<p>Then apply the two package fixes in <code class="docutils literal notranslate"><span class="pre">QUDI_MIGRATION.md</span></code>: pin PySide6 to 6.11.0 (6.12 blanks the
+scanner GUI’s input boxes), and make sure <code class="docutils literal notranslate"><span class="pre">pyserial</span></code>, not the unrelated <code class="docutils literal notranslate"><span class="pre">serial</span></code> package, is
+installed.</p>
+</li>
+<li><p><strong>Set up the configuration.</strong> Create <code class="docutils literal notranslate"><span class="pre">qudi-configs/</span></code> (already present in the reference
+workspace) and copy in <code class="docutils literal notranslate"><span class="pre">default.cfg</span></code> from <code class="docutils literal notranslate"><span class="pre">qudi-iqo-modules/src/qudi/default.cfg</span></code> and the NV2
+configuration (<code class="docutils literal notranslate"><span class="pre">SPUD*.cfg</span></code>). In the NV2 configuration, set <code class="docutils literal notranslate"><span class="pre">default_data_dir</span></code> to the data folder
+on this computer.</p></li>
+<li><p><strong>Register the notebook kernel:</strong></p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">qudi-install-kernel</span><span class="p">.</span><span class="n">exe</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Start Qudi.</strong> Run <code class="docutils literal notranslate"><span class="pre">qudi</span></code> from the workspace folder, then load the NV2 configuration in the
+Qudi manager (<strong>File → Load configuration</strong> → <code class="docutils literal notranslate"><span class="pre">qudi-configs/SPUD*.cfg</span></code>). Alternatively, pass it
+at startup:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">qudi</span><span class="p">.</span><span class="n">exe</span> <span class="n">-c</span> <span class="n">qudi-configs</span><span class="p">\</span><span class="n">SPUD202609</span><span class="p">.</span><span class="n">cfg</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The environment currently runs with these versions:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Package</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Python</p></td>
+<td><p>3.11.9</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>qudi-core</p></td>
+<td><p>1.8.0</p></td>
+<td><p>From PyPI</p></td>
+</tr>
+<tr class="row-even"><td><p>qudi-iqo-modules</p></td>
+<td><p>1.0.0.dev0</p></td>
+<td><p>Editable install from the fork</p></td>
+</tr>
+<tr class="row-odd"><td><p>PySide6</p></td>
+<td><p>6.11.0</p></td>
+<td><p>Pinned; 6.12 has a GUI bug</p></td>
+</tr>
+<tr class="row-even"><td><p>pyserial</p></td>
+<td><p>3.5</p></td>
+<td><p>Needed by the DLnsec driver</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Older lab modules written for PySide2 must be ported to PySide6 before they load. The porting
+steps and a troubleshooting table are in <code class="docutils literal notranslate"><span class="pre">QUDI_MIGRATION.md</span></code>.</p>
+</section>
+<section id="version-control">
+<span id="software-version-control"></span><h2>Version Control<a class="headerlink" href="#version-control" title="Link to this heading">¶</a></h2>
+<p>The workspace is a git repository in its own right (the <em>parent</em>), with the two forks inside it as
+<strong>git submodules</strong>:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Folder</p></th>
+<th class="head"><p>Repository</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>parent</p></td>
+<td><p><a class="reference external" href="https://github.com/qeg-ungar/nv2-workspace">qeg-ungar/nv2-workspace</a></p></td>
+<td><p>Lab files: <code class="docutils literal notranslate"><span class="pre">qudi-configs/</span></code>, notebooks, notes, the VS Code workspace</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">qudi-iqo-modules/</span></code></p></td>
+<td><p><a class="reference external" href="https://github.com/qeg-ungar/qudi-iqo-modules/tree/nv2-qeg">qeg-ungar/qudi-iqo-modules</a>, branch <code class="docutils literal notranslate"><span class="pre">nv2-qeg</span></code> (fork of <a class="reference external" href="https://github.com/Ulm-IQO/qudi-iqo-modules">Ulm-IQO/qudi-iqo-modules</a>)</p></td>
+<td><p>Qudi modules, including the DLnsec laser and SPC3 camera</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">qua-libs/</span></code></p></td>
+<td><p><a class="reference external" href="https://github.com/qeg-ungar/qua-libs/tree/nv2-qeg">qeg-ungar/qua-libs</a>, branch <code class="docutils literal notranslate"><span class="pre">nv2-qeg</span></code> (fork of <a class="reference external" href="https://github.com/qua-platform/qua-libs">qua-platform/qua-libs</a>)</p></td>
+<td><p>QUA scripts, including the NV2 folder</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In the reference workspace, the lab code in each fork is on the <code class="docutils literal notranslate"><span class="pre">nv2-qeg</span></code> branch; the branch is also
+recorded in the parent’s <code class="docutils literal notranslate"><span class="pre">.gitmodules</span></code>. The forks’ <code class="docutils literal notranslate"><span class="pre">main</span></code> branches hold an earlier version of the
+lab code and are not used.</p>
+<p>The parent stores the lab’s own files and, for each fork, a pointer to one specific commit; it
+does not store the fork files. Each fork keeps its own history, so it can still pull updates from
+its upstream project. Every parent commit therefore records a combination of lab files and fork
+versions that work together, and you can return to it if a later update breaks something. The rule
+to remember is <strong>commit in the fork first, then in the parent</strong>.</p>
+<p>All repositories are public, so never commit passwords, tokens, or measurement data. The
+workspace’s <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> excludes the virtual environment, data folders, and logs.</p>
+<section id="first-time-setup-on-a-new-computer">
+<h3>First-time setup on a new computer<a class="headerlink" href="#first-time-setup-on-a-new-computer" title="Link to this heading">¶</a></h3>
+<p>After cloning with <code class="docutils literal notranslate"><span class="pre">--recurse-submodules</span></code>, make <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span></code> also push any unpushed fork commits,
+and put both forks on their <code class="docutils literal notranslate"><span class="pre">nv2-qeg</span></code> branch (a fresh clone leaves them at a fixed commit, and
+commits made there would not belong to any branch):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>push.recurseSubmodules<span class="w"> </span>on-demand
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>foreach<span class="w"> </span>git<span class="w"> </span>switch<span class="w"> </span>nv2-qeg
 </pre></div>
 </div>
 </section>
-<section id="analysis">
-<h2>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">¶</a></h2>
-<p><em>Describe analysis tools and notebooks: libraries used (NumPy, SciPy, matplotlib), standard fitting routines.</em></p>
-</section>
-<section id="dependencies-environment-setup">
-<h2>Dependencies &amp; Environment Setup<a class="headerlink" href="#dependencies-environment-setup" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>nv2<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
-conda<span class="w"> </span>activate<span class="w"> </span>nv2
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<section id="before-you-start-working">
+<h3>Before you start working<a class="headerlink" href="#before-you-start-working" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>pull
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>foreach<span class="w"> </span>git<span class="w"> </span>pull
 </pre></div>
 </div>
 </section>
+<section id="saving-and-sharing-changes">
+<h3>Saving and sharing changes<a class="headerlink" href="#saving-and-sharing-changes" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>Parent files only</strong> (notebooks, configurations): commit and push as in any repository.</p></li>
+<li><p><strong>Files inside a fork</strong> (e.g. a QUA script in <code class="docutils literal notranslate"><span class="pre">qua-libs</span></code>):</p>
+<ol class="arabic">
+<li><p>Commit in the fork:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>-C<span class="w"> </span>qua-libs<span class="w"> </span>add<span class="w"> </span>-A
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>-C<span class="w"> </span>qua-libs<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Describe the change"</span>
+</pre></div>
+</div>
+</li>
+<li><p>Record the fork’s new commit in the parent:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>qua-libs
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update qua-libs: short summary"</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push. This pushes the fork first, then the parent:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p><strong>Both</strong>: commit in each fork you changed, then make one parent commit with the parent files and
+the updated fork pointers, and push.</p></li>
+</ul>
+<p>To bring in upstream updates to a fork, click <strong>Sync fork</strong> on its GitHub page, pull it locally
+(<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">-C</span> <span class="pre">qudi-iqo-modules</span> <span class="pre">pull</span></code>), check that Qudi and the QUA scripts still run, then commit the
+updated pointer in the parent.</p>
 </section>
+<section id="reading-git-status">
+<h3>Reading <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code><a class="headerlink" href="#reading-git-status" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code> in the parent shows</p></th>
+<th class="head"><p>Meaning</p></th>
+<th class="head"><p>What to do</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modified:</span> <span class="pre">qua-libs</span> <span class="pre">(modified</span> <span class="pre">content)</span></code></p></td>
+<td><p>Uncommitted edits inside the fork</p></td>
+<td><p>Commit in the fork</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modified:</span> <span class="pre">qua-libs</span> <span class="pre">(new</span> <span class="pre">commits)</span></code></p></td>
+<td><p>The fork has commits the parent has not recorded</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span> <span class="pre">qua-libs</span></code>, commit, push</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modified:</span> <span class="pre">qua-libs</span> <span class="pre">(untracked</span> <span class="pre">content)</span></code></p></td>
+<td><p>New files in the fork</p></td>
+<td><p>Commit them in the fork, or add them to its <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>VS Code’s <strong>Source Control</strong> panel shows the parent and both forks side by side, so each can be
+committed without typing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">-C</span></code> commands; the order is the same (forks first, then the parent).</p>
+</section>
+</section>
+</section>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="binder2017" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>J. M. Binder, A. Stark, N. Tomek, J. Scheuer, F. Frank, K. D. Jahnke, C. Müller, S. Schmitt, M. H. Metsch, T. Unden, T. Gehring, A. Huck, U. L. Andersen, L. J. Rogers, and F. Jelezko, <em>Qudi: A modular python suite for experiment control and data processing</em>, SoftwareX, vol. 6, pp. 85–90, 2017. <a class="reference external" href="https://doi.org/10.1016/j.softx.2017.02.001">https://doi.org/10.1016/j.softx.2017.02.001</a></p>
+</aside>
+<aside class="footnote brackets" id="qmdocs" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id7">2</a>)</span>
+<p>Quantum Machines documentation, <em>QUA overview</em>, <a class="reference external" href="https://docs.quantum-machines.co/latest/docs/Introduction/qua_overview/">https://docs.quantum-machines.co/latest/docs/Introduction/qua_overview/</a></p>
+</aside>
+<aside class="footnote brackets" id="qudimodules" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p>qudi-core documentation, <em>Measurement modules</em>, <a class="reference external" href="https://ulm-iqo.github.io/qudi-core/design_concepts/measurement_modules.html">https://ulm-iqo.github.io/qudi-core/design_concepts/measurement_modules.html</a></p>
+</aside>
+<aside class="footnote brackets" id="qudiconfig" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">4</a><span class="fn-bracket">]</span></span>
+<p>qudi-core documentation, <em>Configuration</em>, <a class="reference external" href="https://ulm-iqo.github.io/qudi-core/design_concepts/configuration.html">https://ulm-iqo.github.io/qudi-core/design_concepts/configuration.html</a></p>
+</aside>
+<aside class="footnote brackets" id="qudijupyter" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">5</a><span class="fn-bracket">]</span></span>
+<p>qudi-core documentation, <em>Jupyter notebooks</em>, <a class="reference external" href="https://ulm-iqo.github.io/qudi-core/setup/jupyter.html">https://ulm-iqo.github.io/qudi-core/setup/jupyter.html</a></p>
+</aside>
+<aside class="footnote brackets" id="qmconfig" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">6</a><span class="fn-bracket">]</span></span>
+<p>Quantum Machines documentation, <em>The QUA configuration</em>, <a class="reference external" href="https://docs.quantum-machines.co/latest/docs/Introduction/config/">https://docs.quantum-machines.co/latest/docs/Introduction/config/</a></p>
+</aside>
+</aside>
 
         </article>
       </div>
@@ -395,17 +1062,30 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Software Organization</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#repositories-packages">Repositories &amp; Packages</a></li>
-<li><a class="reference internal" href="#control-software">Control Software</a><ul>
-<li><a class="reference internal" href="#qua-programs-qm-opx">QUA Programs (QM OPX)</a></li>
-<li><a class="reference internal" href="#ni-i-o-control">NI I/O Control</a></li>
-<li><a class="reference internal" href="#piezo-scanner">Piezo Scanner</a></li>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#environment-and-workflow">Environment and workflow</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#data-storage">Data Storage</a></li>
-<li><a class="reference internal" href="#analysis">Analysis</a></li>
-<li><a class="reference internal" href="#dependencies-environment-setup">Dependencies &amp; Environment Setup</a></li>
+<li><a class="reference internal" href="#qudi">Qudi</a><ul>
+<li><a class="reference internal" href="#hardware-logic-and-gui-modules">Hardware, logic, and GUI modules</a></li>
+<li><a class="reference internal" href="#configuration-file">Configuration file</a></li>
+<li><a class="reference internal" href="#notebooks-and-scripting">Notebooks and scripting</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qua">QUA</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#writing-programs">Writing programs</a></li>
+<li><a class="reference internal" href="#default-nv-scripts">Default NV scripts</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-up-the-workspace">Setting Up the Workspace</a></li>
+<li><a class="reference internal" href="#version-control">Version Control</a><ul>
+<li><a class="reference internal" href="#first-time-setup-on-a-new-computer">First-time setup on a new computer</a></li>
+<li><a class="reference internal" href="#before-you-start-working">Before you start working</a></li>
+<li><a class="reference internal" href="#saving-and-sharing-changes">Saving and sharing changes</a></li>
+<li><a class="reference internal" href="#reading-git-status">Reading <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -421,5 +1101,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

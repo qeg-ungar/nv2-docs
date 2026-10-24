@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Diamond Sample &amp; PCB" href="diamond_sample.html"><link rel="prev" title="Optics &amp; Imaging" href="optics.html">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
         <title>Microwave &amp; RF Electronics - NV2 Lab Manual</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -445,9 +445,7 @@ sideband and cancel on the other.</p>
 <p>The phase <span class="math notranslate nohighlight">\(\phi\)</span> of the IF waveforms therefore sets the phase of the MW pulse (the rotation axis),
 while the IF amplitude <span class="math notranslate nohighlight">\(A_\text{IF}\)</span> can be used to control power (the Rabi frequency). The exact power depends on both <span class="math notranslate nohighlight">\(A_\text{IF}\)</span> (set in volts) and the SG384 LO amplitude (set in dBm). The SG384 IQ inputs are
 50 Ω with a full scale of <span class="math notranslate nohighlight">\(\sqrt{s_I^2 + s_Q^2} = 0.5\)</span> V, matching the ±0.5 V output range of the OPX+, and the modulation
-bandwidth is 200 MHz<a class="footnote-reference brackets" href="#sg384" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. A real mixer adds DC offsets and I/Q amplitude and phase imbalance,
-which produce LO leakage and an image sideband at <span class="math notranslate nohighlight">\(f_\text{LO} - f_\text{IF}\)</span>. These are corrected
-in the QUA configuration (see <a class="reference internal" href="../calibration/iq_calibration.html"><span class="doc">IQ Calibration</span></a>).</p>
+bandwidth is 200 MHz<a class="footnote-reference brackets" href="#sg384" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. Any phase and amplitude imbalance between the I and Q tones (from cables or other connections) will produce an image sideband at <span class="math notranslate nohighlight">\(f_\text{LO} - f_\text{IF}\)</span>, and any DC offsets from the mixer will lead to LO leakage. These are corrected for using QUA calibration software (see <a class="reference internal" href="../calibration/iq_calibration.html"><span class="doc">IQ Calibration</span></a>).</p>
 <p>The SG384’s external IQ modulation only works for carrier frequencies between 400 MHz and
 4.05 GHz<a class="footnote-reference brackets" href="#sg384" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. The NV band is well inside this range, but the X chain’s LO must be set at or
 above 400 MHz.</p>

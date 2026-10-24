@@ -118,14 +118,12 @@ where $\omega = 2\pi f$. The output is a single tone at the upper sideband, $f_\
 and it carries the phase $\phi$ of the IF waveforms. Adding the two products instead of subtracting
 them selects the lower sideband, at $f_\text{LO} - f_\text{IF}$ with phase $-\phi$. Unlike a single
 mixer, which splits its output equally between the two sidebands, the two IQ paths add on one
-sideband and cancel on the other.
+sideband and cancel on the other. 
 
 The phase $\phi$ of the IF waveforms therefore sets the phase of the MW pulse (the rotation axis),
 while the IF amplitude $A_\text{IF}$ can be used to control power (the Rabi frequency). The exact power depends on both $A_\text{IF}$ (set in volts) and the SG384 LO amplitude (set in dBm). The SG384 IQ inputs are
 50 Ω with a full scale of $\sqrt{s_I^2 + s_Q^2} = 0.5$ V, matching the ±0.5 V output range of the OPX+, and the modulation
-bandwidth is 200 MHz[^SG384]. A real mixer adds DC offsets and I/Q amplitude and phase imbalance,
-which produce LO leakage and an image sideband at $f_\text{LO} - f_\text{IF}$. These are corrected
-in the QUA configuration (see {doc}`IQ Calibration <../calibration/iq_calibration>`).
+bandwidth is 200 MHz[^SG384]. Any phase and amplitude imbalance between the I and Q tones (from cables or other connections) will produce an image sideband at $f_\text{LO} - f_\text{IF}$, and any DC offsets from the mixer will lead to LO leakage. These are corrected for using QUA calibration software (see {doc}`IQ Calibration <../calibration/iq_calibration>`).
 
 The SG384's external IQ modulation only works for carrier frequencies between 400 MHz and
 4.05 GHz[^SG384]. The NV band is well inside this range, but the X chain's LO must be set at or
