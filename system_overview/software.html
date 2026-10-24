@@ -539,11 +539,15 @@ the results live.</p>
 physical OPX+ ports to the logical objects the program uses<a class="footnote-reference brackets" href="#qmconfig" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>:</p>
 <ul class="simple">
 <li><p><strong>Controllers</strong> list the OPX+ ports in use, with their DC offsets and delays.</p></li>
-<li><p><strong>Elements</strong> are the components the program addresses: each has its input ports, an intermediate
-frequency (IF), and a set of named <strong>operations</strong>.</p></li>
-<li><p><strong>Operations</strong> point to <strong>pulses</strong>, which have a length and <strong>waveforms</strong> (one for a single
-input, I and Q for an IQ input). Measurement pulses also define how the returning signal is
-acquired. The <strong>mixer</strong> entry holds the IQ correction matrix from the
+<li><p><strong>Elements</strong> are the components the program addresses. Each is assigned the OPX+ outputs that
+drive it (a single analog output, an I/Q pair of analog outputs, or a digital output), and a
+readout element is also assigned the OPX+ analog input it is read on. Each element also has an
+intermediate frequency (IF) and a set of named <strong>operations</strong>. The configuration keys are named
+from the element’s point of view, so <code class="docutils literal notranslate"><span class="pre">singleInput</span></code>, <code class="docutils literal notranslate"><span class="pre">mixInputs</span></code>, and <code class="docutils literal notranslate"><span class="pre">digitalInputs</span></code> refer to
+OPX+ outputs, and an element’s <code class="docutils literal notranslate"><span class="pre">outputs</span></code> refers to an OPX+ input.</p></li>
+<li><p><strong>Operations</strong> point to <strong>pulses</strong>, which have a length and <strong>waveforms</strong>: one for an element on
+a single analog output, I and Q for an element on an I/Q pair. Measurement pulses also define how
+the signal on the OPX+ input is acquired. The <strong>mixer</strong> entry holds the IQ correction matrix from the
 <a class="reference internal" href="../calibration/iq_calibration.html"><span class="doc">IQ calibration</span></a>.</p></li>
 </ul>
 <p>The NV2 elements map onto the <a class="reference internal" href="rf_electronics.html"><span class="doc">microwave and RF chain</span></a> as follows:</p>
